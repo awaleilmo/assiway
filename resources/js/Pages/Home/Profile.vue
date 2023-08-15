@@ -1,7 +1,7 @@
 <script setup>
 
-import Book from "@/Pages/Home/book.vue";
-import UserLayout from "@/Layouts/userLayout.vue";
+import Book from "@/Pages/Home/Book.vue";
+import UserLayout from "@/Layouts/UserLayout.vue";
 import {onMounted, ref} from "vue";
 import {initFlowbite} from "flowbite";
 const loading = ref(true);

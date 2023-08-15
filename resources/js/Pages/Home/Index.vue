@@ -1,10 +1,10 @@
 <script setup>
 
-import UserLayout from "@/Layouts/userLayout.vue";
-import Book from "./book.vue";
+import UserLayout from "@/Layouts/UserLayout.vue";
+import Book from "./Book.vue";
 import {onMounted, ref} from "vue";
-import Self from "./self.vue";
-import WorkUs from "./workUs.vue";
+import Self from "./Self.vue";
+import WorkUs from "./WorkUs.vue";
 import { initFlowbite } from 'flowbite'
 
 const loading = ref(true);
