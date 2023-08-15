@@ -29,7 +29,7 @@
                 <div class="hidden w-full md:block md:w-auto" id="navbar-default">
                     <NavHeader>
                         <NavLink :active-link="navActive.home" href="#home" @click="toggleNav(12)">Home</NavLink>
-                        <NavLink :active-link="navActive.profile" href="#profile" @click="toggleNav(0)">Profile
+                        <NavLink :active-link="navActive.profile" href="/profiles" @click="toggleNav(0)">Profile
                         </NavLink>
                         <NavLink :active-link="navActive.licenses" href="#licenses" @click="toggleNav(2)">Book</NavLink>
                         <NavLink :active-link="navActive.contact" href="#contact" @click="toggleNav(4)">Contact
