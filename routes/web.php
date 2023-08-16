@@ -26,7 +26,7 @@ Route::get('/', function () {
 });
 
 Route::get('/profiles', function () {
-    return Inertia::render('Home/profile');
+    return Inertia::render('Home/Profile');
 });
 
 Route::get('/dashboard', function () {

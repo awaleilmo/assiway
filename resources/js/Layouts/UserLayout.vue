@@ -32,8 +32,8 @@
                         <NavLink :active-link="navActive.profile" href="/profiles" @click="toggleNav(0)">Profile
                         </NavLink>
                         <NavLink :active-link="navActive.licenses" href="#licenses" @click="toggleNav(2)">Book</NavLink>
-                        <NavLink :active-link="navActive.contact" href="#contact" @click="toggleNav(4)">Contact
-                        </NavLink>
+<!--                        <NavLink :active-link="navActive.contact" href="#contact" @click="toggleNav(4)">Contact-->
+<!--                        </NavLink>-->
                         <NavLink v-if="$page.props.auth.user" :href="$page.props.auth.user.isAdmin === 1 ? '/admin/dashboard' : '/member/dashboard'">
                             {{ $page.props.auth.user.isAdmin === 1 ? 'Admin' : 'Member' }}
                         </NavLink>
