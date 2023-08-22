@@ -1,12 +1,13 @@
-<template>
+<script setup>
 
-</template>
-
-<script>
-export default {
-    name: "Index"
-}
+import AdminLayout from "@/Layouts/AdminLayout.vue";
 </script>
+
+<template>
+<AdminLayout>
+    testing
+</AdminLayout>
+</template>
 
 <style scoped>
 
