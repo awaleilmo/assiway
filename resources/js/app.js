@@ -6,6 +6,11 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import 'flowbite';
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { faCircleUser} from '@fortawesome/free-solid-svg-icons'
+library.add(faCircleUser)
+
 import { MotionPlugin } from '@vueuse/motion'
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
@@ -17,6 +22,7 @@ createInertiaApp({
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(MotionPlugin)
+            .component('font-awesome-icon', FontAwesomeIcon)
             .use(ZiggyVue, Ziggy)
             .mount(el);
     },
