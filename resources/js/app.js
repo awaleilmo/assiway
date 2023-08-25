@@ -8,8 +8,14 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import 'flowbite';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faCircleUser} from '@fortawesome/free-solid-svg-icons'
-library.add(faCircleUser)
+import {
+    faCircleUser,
+    faBook
+} from '@fortawesome/free-solid-svg-icons'
+library.add(
+    faCircleUser,
+    faBook
+)
 
 import { MotionPlugin } from '@vueuse/motion'
 
