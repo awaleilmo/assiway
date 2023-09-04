@@ -7,14 +7,14 @@ import WarningButton from "@/Components/WarningButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import {useForm, usePage} from "@inertiajs/vue3";
 import {computed, ref} from "vue";
-import Loading from "@/Components/Loading.vue";
 import Modal from "@/Components/Modal.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import TextInputArea from "@/Components/TextInputArea.vue";
 import convertToBase64 from "@/Configuration/sys.js";
-import SecondaryButton from "@/Components/SecondaryButton.vue";
 import ProgressBar from "@/Components/ProgressBar.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
+import Loading from "@/Components/Loading.vue";
 
 const props = defineProps({
     dataBooks: Object
@@ -27,24 +27,30 @@ const columns = [
     {label: 'Name', field: 'name', search: true, sortable: true, width: '100px'},
     {label: 'Author', field: 'author', search: true, sortable: true, width: '100px'},
     {label: 'Description', field: 'description', search: true, sortable: true, width: '300px'},
-    {label: 'Year', field: 'year', search: true, sortable: true, width: '100px'},
+    {label: 'Year', field: 'years', search: true, sortable: true, width: '100px'},
     {label: 'Publisher', field: 'publisher', search: true, sortable: true, width: '100px'},
-    {label: 'Price', field: 'Price', search: true, sortable: true, width: '100px'},
+    {label: 'Price', field: 'price', search: true, sortable: true, width: '100px'},
+    {label: 'File', field: 'file', search: true, sortable: true, width: '100px'},
 ]
 const tempFoto = ref(null);
-const show = ref(false);
+const tempFile = ref(null);
+const show = ref(false)
+const previewShow = ref(false)
 const imgDataUrl = ref('')
 const form = useForm({
-    name: '',
-    author: '',
-    description: '',
-    year: '',
-    publisher: '',
-    price: '',
-    cover: '',
-    coverType: '',
-    fileData: ''
+    id: null,
+    name: null,
+    author: null,
+    description: null,
+    year: null,
+    publisher: null,
+    price: null,
+    cover: null,
+    coverType: null,
+    fileData: null
 });
+const datatable = ref(null)
+const progressLoading = ref(false)
 const popForm = useForm({
     status: false,
     title: ''
@@ -60,6 +66,7 @@ const saveFunction = () => {
             if (e.props.flash.response.status) {
                 form.reset()
                 popForm.reset()
+                tempFile.value = null
             }
         },
     })
@@ -69,6 +76,32 @@ const saveFunction = () => {
 const addFunction = () => {
     popForm.status = true
     popForm.title = 'Add ' + title
+    usePage().props.flash = []
+}
+const editFunction = () => {
+    let rawData = datatable.value.$refs.datatab.selectedRows
+    if (rawData.length === 0 || rawData.length > 1) {
+        alerts.value.status = true
+        alerts.value.message = rawData.length === 0 ? 'Please select at least one menu' : 'You can only edit one menu at a time'
+        alerts.value.color = 'bg-red-50 text-red-600'
+        return;
+    }
+    let data = rawData[0]
+    popForm.status = true
+    popForm.title = 'Edit ' + title
+    form.id = data.id
+    form.name = data.name
+    form.author = data.author
+    form.description = data.description
+    form.year = data.years
+    form.publisher = data.publisher
+    form.price = data.price
+    form.cover = data.cover
+    form.coverType = data.coverType
+    form.fileData = data.file
+    tempFile.value = data.file
+    tempFoto.value = data.coverType + ',' + data.cover
+    console.log(data)
     usePage().props.flash = []
 }
 const convertBase = async (file) => {
@@ -89,19 +122,34 @@ const saveImage = async () => {
 function change({canvas}) {
     imgDataUrl.value = canvas.toDataURL("image/jpeg")
 }
-
+const openPreview = (data) => {
+    progressLoading.value = true
+    setTimeout(() => {
+        form.id = data.id
+        form.name = data.name
+        form.author = data.author
+        form.description = data.description
+        form.year = data.years
+        form.publisher = data.publisher
+        form.price = data.price
+        form.cover = data.cover
+        form.coverType = data.coverType
+        form.fileData = data.file
+        progressLoading.value = false
+        previewShow.value = true
+    }, 2000)
+}
 const closeFunction = () => {
     popForm.reset()
     form.reset()
+    previewShow.value = false
+    tempFile.value = null
+    tempFoto.value = null
     usePage().props.flash = []
 }
-
-function closeCropper() {
-    show.value = false
-    imgDataUrl.value = null
-    tempFoto.value = null
+const changeFile = (e) => {
+    form.fileData = e.target.files[0]
 }
-
 const changeAvatar = () => {
     document.getElementById('fileAvatar').click()
 }
@@ -151,8 +199,14 @@ const notification = computed(() => {
                     >
                         <template #table-row="props">
                                 <span v-if="props.column.field === 'coverType'">
-                                  <img :src="props.row.coverType+','+props.row.cover" class="w-24 h-24" alt="...">
+                                  <img :src="props.row.coverType+','+props.row.cover"
+                                       class="w-52 h-64 rounded-lg object-cover" alt="...">
                                 </span>
+                            <span v-if="props.column.field === 'file'">
+                                <secondary-button v-if="props.row.file !== null" @click="openPreview(props.row)">
+                                    Preview
+                                </secondary-button>
+                            </span>
                         </template>
                     </AkuTable>
                 </div>
@@ -260,11 +314,9 @@ const notification = computed(() => {
                                 id="file"
                                 type="file"
                                 class="mt-1 block w-full"
-                                v-model="form.fileData"
                                 accept=".pdf"
-                                required
+                                @change="changeFile($event)"
                                 placeholder="File"
-                                :model-value="form.fileData"
                             />
                         </div>
                         <div>
@@ -360,6 +412,37 @@ const notification = computed(() => {
         </div>
 
     </Modal>
+
+    <Modal :show="previewShow" @close="closeFunction" max-width="7xl">
+        <div class="relative w-full">
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow">
+                <button @click="closeFunction" type="button"
+                        class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
+                        data-modal-hide="crypto-modal">
+                    <font-awesome-icon icon="fa-solid fa-close"/>
+                    <span class="sr-only">Close modal</span>
+                </button>
+                <!-- Modal header -->
+                <div class="px-6 py-4 border-b rounded-t bg-gray-100">
+                    <h3 class="text-base font-semibold text-gray-900 lg:text-xl ">
+                        Preview File
+                    </h3>
+                </div>
+
+                <!-- Modal body -->
+                <div class="p-6">
+                    <div class="mt-4">
+                        <embed :src="'../storage/book/'+form.fileData" width="100%"  height="700" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </Modal>
+
+
+
+    <Loading :loading="progressLoading"/>
 </template>
 
 <style scoped>
