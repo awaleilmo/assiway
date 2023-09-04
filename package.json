@@ -23,6 +23,8 @@
         "@fortawesome/free-solid-svg-icons": "^6.4.2",
         "@fortawesome/vue-fontawesome": "^3.0.3",
         "@vueuse/motion": "^2.0.0",
-        "flowbite": "^1.8.1"
+        "flowbite": "^1.8.1",
+        "vue-advanced-cropper": "^2.8.8",
+        "vue-good-table-next": "^0.2.1"
     }
 }

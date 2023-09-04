@@ -17,7 +17,7 @@ const props = defineProps({
                     leave-to-class="opacity-0"
                 >
                     <div v-show="loading" class="fixed inset-0 transform transition-all" >
-                        <div class="absolute inset-0 bg-gray-900"/>
+                        <div class="absolute inset-0 bg-gray-500 opacity-25"/>
                     </div>
                 </transition>
 
@@ -31,10 +31,10 @@ const props = defineProps({
                 >
                     <div
                         v-show="loading"
-                        class="mb-6  rounded-lg overflow-hidden transform transition-all"
+                        class="mb-6 bg-gray-800/70  rounded-lg overflow-hidden transform transition-all"
                     >
                             <svg xmlns="http://www.w3.org/2000/svg"
-                                 style="margin:auto;display:block;" width="150px" height="150px"
+                                 style="margin:auto;display:block;" width="200px" height="200px"
                                  viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
                                 <circle cx="75" cy="50" fill="#dcfff8" r="5">
                                     <animate attributeName="r" values="3;3;5;3;3" times="0;0.1;0.2;0.3;1" dur="1s"

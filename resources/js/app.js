@@ -6,15 +6,26 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import 'flowbite';
+import 'vue-good-table-next/dist/vue-good-table-next.css'
+import { Cropper } from 'vue-advanced-cropper'
+import 'vue-advanced-cropper/dist/style.css';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import {
     faCircleUser,
-    faBook
+    faBook,
+    faPencil,
+    faSearch,
+    faAdd,
+    faClose
 } from '@fortawesome/free-solid-svg-icons'
 library.add(
     faCircleUser,
-    faBook
+    faBook,
+    faPencil,
+    faSearch,
+    faAdd,
+    faClose
 )
 
 import { MotionPlugin } from '@vueuse/motion'
@@ -29,6 +40,7 @@ createInertiaApp({
             .use(plugin)
             .use(MotionPlugin)
             .component('font-awesome-icon', FontAwesomeIcon)
+            .component('cropper', Cropper)
             .use(ZiggyVue, Ziggy)
             .mount(el);
     },

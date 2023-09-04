@@ -108,7 +108,7 @@ onMounted(() => {
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group">
+                            <a href="dashboard" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group">
                                 <svg class="w-5 h-5 transition duration-75 text-gray-400 group-hover:text-white"
                                      aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                                      viewBox="0 0 22 21">
@@ -121,7 +121,7 @@ onMounted(() => {
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group">
+                            <a href="book" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group">
                                 <font-awesome-icon :icon="['fas', 'book']" class="w-5 h-5 transition duration-75 text-gray-400 group-hover:text-white"/>
                                 <span class="flex-1 ml-3 whitespace-nowrap">Book</span>
                             </a>
