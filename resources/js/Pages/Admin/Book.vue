@@ -11,10 +11,12 @@ import Modal from "@/Components/Modal.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import TextInputArea from "@/Components/TextInputArea.vue";
-import convertToBase64 from "@/Configuration/sys.js";
+import convertToBase64, {formatter} from "@/Configuration/sys.js";
 import ProgressBar from "@/Components/ProgressBar.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Loading from "@/Components/Loading.vue";
+import DangerButton from "@/Components/DangerButton.vue";
+import bookModel from "@/Model/BookModel.js";
 
 const props = defineProps({
     dataBooks: Object
@@ -23,8 +25,9 @@ const props = defineProps({
 const url = usePage().props.dataBooks.path
 const title = 'Books'
 const columns = [
-    {label: 'Cover', field: 'coverType', search: true, sortable: true, width: '100px'},
-    {label: 'Name', field: 'name', search: true, sortable: true, width: '100px'},
+    {label: 'Cover', field: 'coverType', search: true, sortable: true, width: '200px'},
+    {label: 'Display Homepage', field: 'display', search: true, sortable: true, width: '150px'},
+    {label: 'Name', field: 'name', search: true, sortable: true, width: '150px'},
     {label: 'Author', field: 'author', search: true, sortable: true, width: '100px'},
     {label: 'Description', field: 'description', search: true, sortable: true, width: '300px'},
     {label: 'Year', field: 'years', search: true, sortable: true, width: '100px'},
@@ -77,6 +80,27 @@ const addFunction = () => {
     popForm.status = true
     popForm.title = 'Add ' + title
     usePage().props.flash = []
+}
+const displayFunction = () => {
+    progressLoading.value = true
+    let rawData = datatable.value.$refs.datatab.selectedRows
+    if (rawData.length === 0 ) {
+        alerts.value.status = true
+        alerts.value.message = 'Please select at least one menu'
+        alerts.value.color = 'bg-red-50 text-red-600'
+        progressLoading.value = false
+        return;
+    }
+    for(let i = 0; i < rawData.length; i++) {
+        let data = {
+            id: rawData[i].id,
+        }
+        bookModel.setDisplay(data)
+    }
+    setTimeout(() => {
+        location.reload()
+        progressLoading.value = false
+    }, 3000)
 }
 const editFunction = () => {
     let rawData = datatable.value.$refs.datatab.selectedRows
@@ -185,6 +209,9 @@ const notification = computed(() => {
                             <font-awesome-icon icon="fa-solid fa-add"/>
                             Add
                         </primary-button>
+                        <primary-button class="mx-1 pl-3 pr-3" @click="displayFunction">
+                            Display on Homepage
+                        </primary-button>
                         <warning-button class="mx-1 pl-2 pr-3" @click="editFunction">
                             <font-awesome-icon icon="fa-solid fa-pencil" class="mx-1"/>
                             Edit
@@ -195,6 +222,7 @@ const notification = computed(() => {
                         :data-table="dataBooks"
                         :column="columns"
                         checkbox-options
+                        compact-mode
                         ref="datatable"
                     >
                         <template #table-row="props">
@@ -202,6 +230,17 @@ const notification = computed(() => {
                                   <img :src="props.row.coverType+','+props.row.cover"
                                        class="w-52 h-64 rounded-lg object-cover" alt="...">
                                 </span>
+                            <span v-if="props.column.field === 'display'">
+                                <span v-if="props.row.display === 1">
+                                    <primary-button>Display</primary-button>
+                                </span>
+                                <span v-else>
+                                    <danger-button>Not Display</danger-button>
+                                </span>
+                            </span>
+                            <span v-if="props.column.field === 'price'">
+                                {{ formatter.format(props.row.price) }}
+                            </span>
                             <span v-if="props.column.field === 'file'">
                                 <secondary-button v-if="props.row.file !== null" @click="openPreview(props.row)">
                                     Preview
@@ -324,7 +363,7 @@ const notification = computed(() => {
                             <div
                                 class="w-52 h-80 mt-2 cursor-pointer border border-gray-300 object-cover flex items-center justify-center rounded-lg"
                                 @click="changeAvatar">
-                                <font-awesome-icon v-if="form.coverType === ''" icon="fa-solid fa-add"
+                                <font-awesome-icon v-if="form.coverType === null" icon="fa-solid fa-add"
                                                    class="text-7xl text-gray-600"/>
                                 <img id="imgAvatar" v-else :src="tempFoto"
                                      class="w-52 h-80 rounded-lg object-cover" alt="..."/>

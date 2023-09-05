@@ -50,6 +50,10 @@ const props = defineProps({
             enabled: false
         }
     },
+    compactMode: {
+        type: Boolean,
+        default: false
+    },
     onRowClick: {
         type: Function
     },
@@ -199,6 +203,7 @@ onBeforeMount(() => {
         :fixed-header="fixedHeader"
         :row-style-class="rowStyleClassFn"
         :rtl="rtl"
+        :compactMode="compactMode"
         :sort-options="sortOptions"
         ref="datatab"
         v-on:selected-rows-change="selectionChanged"

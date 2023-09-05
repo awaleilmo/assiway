@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('book_id')->constrained();
             $table->foreignId('user_id')->constrained();
             $table->integer('price');
-            $table->string('status');
+            $table->integer('status')->default(0)->comment('0 = belum bayar, 1 = sudah bayar, 2 = selesai, 3 = dibatalkan');
             $table->timestamps();
         });
     }

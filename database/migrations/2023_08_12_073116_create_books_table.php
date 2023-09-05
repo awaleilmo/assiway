@@ -22,6 +22,8 @@ return new class extends Migration
             $table->integer('years')->default(1200);
             $table->integer('price')->default(0);
             $table->string('file')->nullable();
+            $table->integer('display')->default(0);
+            $table->integer('status')->default(1);
             $table->timestamps();
         });
     }

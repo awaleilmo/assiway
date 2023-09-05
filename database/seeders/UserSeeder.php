@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
         User::query()->insert([
             [
                 'name' => 'admin',
-                'email' => 'admin@assiway.com',
+                'email' => 'admin@assiway.id',
                 'password' => bcrypt('admin1234'),
                 'isAdmin' => 1
             ],

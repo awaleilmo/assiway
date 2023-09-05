@@ -11,3 +11,5 @@ export default function convertToBase64 (file) {
         }
     });
 }
+
+export const formatter = new Intl.NumberFormat('id-ID');

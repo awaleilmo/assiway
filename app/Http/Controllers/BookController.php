@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 use Inertia\Response as inertiaResponse;
@@ -51,9 +52,16 @@ class BookController extends Controller
             }
             $request->get('id') !== null ? $form = Book::query()->find($request->get('id')) : $form = new Book();
             $file = $request->file('fileData');
-            $tanggal = Carbon::now()->format('Ymd');
-            $nama_file = 'book' . $tanggal . '_' . $file->getClientOriginalName();
-            $file->storeAs('book/', $nama_file);
+            $tanggal = Carbon::now()->format('YmdHis');
+            if($file !== null){
+                if($request->get('id') !== null){
+                    $check = Book::query()->where('id', $request->get('id'))->first();
+                    Storage::delete('book/'.$check->getAttribute('file'));
+                }
+                $nama_file = 'book' . $tanggal . '_' . $file->getClientOriginalName();
+                $file->storeAs('book/', $nama_file);
+                $form->setAttribute('file', $nama_file);
+            }
             $form->setAttribute('name', $request->get('name'));
             $form->setAttribute('author', $request->get('author'));
             $form->setAttribute('description', $request->get('description'));
@@ -62,7 +70,6 @@ class BookController extends Controller
             $form->setAttribute('price', $request->get('price'));
             $form->setAttribute('cover', $request->get('cover'));
             $form->setAttribute('coverType', $request->get('coverType'));
-            $form->setAttribute('file', $nama_file);
             $form->save();
             return Redirect::back()->with('response', [
                 'status' => true,
@@ -88,6 +95,46 @@ class BookController extends Controller
                 'message' => 'Data berhasil dihapus',
             ]);
         } catch (Throwable $th) {
+            return Redirect::back()->with('response', [
+                'status' => false,
+                'color' => 'bg-red-50 text-red-600',
+                'message' => $th->getMessage(),
+            ]);
+        }
+    }
+
+    public function displayBook(Request $request): RedirectResponse
+    {
+        try {
+            $book = Book::query()->find($request->get('id'));
+            $book->setAttribute('display', $book->getAttribute('display') ? 0 : 1);
+            $book->save();
+            return Redirect::back()->with('response', [
+                'status' => true,
+                'color' => 'bg-green-100 text-green-600',
+                'message' => 'Data berhasil diubah',
+            ]);
+        }catch (Throwable $th) {
+            return Redirect::back()->with('response', [
+                'status' => false,
+                'color' => 'bg-red-50 text-red-600',
+                'message' => $th->getMessage(),
+            ]);
+        }
+    }
+
+    public function updateStatus(Request $request): RedirectResponse
+    {
+        try {
+            $book = Book::query()->find($request->get('id'));
+            $book->setAttribute('status', $book->getAttribute('status') ? 0 : 1);
+            $book->save();
+            return Redirect::back()->with('response', [
+                'status' => true,
+                'color' => 'bg-green-100 text-green-600',
+                'message' => 'Data berhasil diubah',
+            ]);
+        }catch (Throwable $th) {
             return Redirect::back()->with('response', [
                 'status' => false,
                 'color' => 'bg-red-50 text-red-600',

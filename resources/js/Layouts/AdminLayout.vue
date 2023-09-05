@@ -60,32 +60,20 @@ onMounted(() => {
                                     id="dropdown-user">
                                     <div class="px-4 py-3" role="none">
                                         <p class="text-sm text-white" role="none">
-                                            Neil Sims
+                                            {{ $page.props.auth.user.name }}
                                         </p>
                                         <p class="text-sm font-medium truncate text-gray-300" role="none">
-                                            neil.sims@flowbite.com
+                                            {{ $page.props.auth.user.email }}
                                         </p>
                                     </div>
                                     <ul class="py-1" role="none">
                                         <li>
-                                            <a href="#"
-                                               class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white"
-                                               role="menuitem">Dashboard</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
+                                            <a :href="route('profile.edit')"
                                                class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white"
                                                role="menuitem">Settings</a>
                                         </li>
                                         <li>
-                                            <a href="#"
-                                               class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white"
-                                               role="menuitem">Earnings</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                               class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white"
-                                               role="menuitem">Sign out</a>
+                                            <DropdownLink :href="route('logout')" method="post" as="button">Sign out</DropdownLink>
                                         </li>
                                     </ul>
                                 </div>
@@ -108,7 +96,9 @@ onMounted(() => {
                             </a>
                         </li>
                         <li>
-                            <a href="dashboard" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group">
+                            <a href="dashboard" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group"
+                                :class="{ 'bg-blue-700': route().current('dashboardAdmin') }"
+                            >
                                 <svg class="w-5 h-5 transition duration-75 text-gray-400 group-hover:text-white"
                                      aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                                      viewBox="0 0 22 21">
@@ -121,13 +111,17 @@ onMounted(() => {
                             </a>
                         </li>
                         <li>
-                            <a href="book" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group">
+                            <a href="book" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group"
+                               :class="{ 'bg-blue-700': route().current('bookAdmin') }"
+                            >
                                 <font-awesome-icon :icon="['fas', 'book']" class="w-5 h-5 transition duration-75 text-gray-400 group-hover:text-white"/>
                                 <span class="flex-1 ml-3 whitespace-nowrap">Book</span>
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group">
+                            <a href="invoice" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group"
+                               :class="{ 'bg-blue-700': route().current('invoiceAdmin') }"
+                            >
                                 <svg
                                     class="flex-shrink-0 w-5 h-5 transition duration-75 text-gray-400 group-hover:text-white"
                                     aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
@@ -135,7 +129,7 @@ onMounted(() => {
                                     <path
                                         d="m17.418 3.623-.018-.008a6.713 6.713 0 0 0-2.4-.569V2h1a1 1 0 1 0 0-2h-2a1 1 0 0 0-1 1v2H9.89A6.977 6.977 0 0 1 12 8v5h-2V8A5 5 0 1 0 0 8v6a1 1 0 0 0 1 1h8v4a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-4h6a1 1 0 0 0 1-1V8a5 5 0 0 0-2.582-4.377ZM6 12H4a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2Z"/>
                                 </svg>
-                                <span class="flex-1 ml-3 whitespace-nowrap">Inbox</span>
+                                <span class="flex-1 ml-3 whitespace-nowrap">Invoice</span>
                             </a>
                         </li>
                         <li>

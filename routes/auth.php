@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\InvoiceController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -66,5 +67,11 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/book', [BookController::class, 'AdminIndex'])->name('bookAdmin');
         Route::post('/book', [BookController::class, 'createOrEdit']);
+        Route::post('/book/display', [BookController::class, 'displayBook']);
+        Route::post('/book/status', [BookController::class, 'updateStatus']);
+
+        Route::get('/invoice', [InvoiceController::class, 'adminIndex'])->name('invoiceAdmin');
+        Route::post('/invoice', [InvoiceController::class, 'create']);
+        Route::post('/invoice/status', [InvoiceController::class, 'updateStatus']);
     })->middleware([ 'verified']);
 });
