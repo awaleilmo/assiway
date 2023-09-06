@@ -21,8 +21,11 @@ class InvoiceController extends Controller
         $search = $request->get('search') ?: '';
         $column = $request->get('column') ?: 'noInvoice';
         $invoice = Invoice::query()
-            ->whereRaw("UPPER(" . $column . ") LIKE '%" . strtoupper($search) . "%'")
-            ->orderBy('noInvoice', 'asc')
+            ->whereRaw("UPPER(invoices." . $column . ") LIKE '%" . strtoupper($search) . "%'")
+            ->leftJoin('books', 'books.id', '=', 'invoices.book_id')
+            ->leftJoin('users', 'users.id', '=', 'invoices.user_id')
+            ->select('invoices.*', 'books.name as book_name', 'users.name as user_name')
+            ->orderBy('invoices.noInvoice', 'asc')
             ->paginate($perPage);
         return Inertia::render('Admin/Invoice', [
             'dataInvoice' => $invoice

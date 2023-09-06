@@ -17,7 +17,10 @@ import {
     faPencil,
     faSearch,
     faAdd,
-    faClose
+    faClose,
+    faReceipt,
+    faChartPie,
+    faUserGroup
 } from '@fortawesome/free-solid-svg-icons'
 library.add(
     faCircleUser,
@@ -25,7 +28,10 @@ library.add(
     faPencil,
     faSearch,
     faAdd,
-    faClose
+    faClose,
+    faReceipt,
+    faChartPie,
+    faUserGroup
 )
 
 import { MotionPlugin } from '@vueuse/motion'
