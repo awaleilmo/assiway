@@ -6,7 +6,7 @@ import AdminLayout from "@/Layouts/AdminLayout.vue";
 <template>
 <AdminLayout>
     <template #header>
-        Kontol Sapi
+        Dashboard
     </template>
 
     <div class="p-4 sm:ml-64">

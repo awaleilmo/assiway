@@ -32,8 +32,6 @@
                         <NavLink :active-link="navActive.profile" href="/profiles" @click="toggleNav(0)">Profile
                         </NavLink>
                         <NavLink :active-link="navActive.licenses" href="#licenses" @click="toggleNav(2)">Book</NavLink>
-<!--                        <NavLink :active-link="navActive.contact" href="#contact" @click="toggleNav(4)">Contact-->
-<!--                        </NavLink>-->
                         <NavLink v-if="$page.props.auth.user" :href="$page.props.auth.user.isAdmin === 1 ? '/admin/dashboard' : '/member/dashboard'">
                             {{ $page.props.auth.user.isAdmin === 1 ? 'Admin' : 'Member' }}
                         </NavLink>
@@ -41,6 +39,35 @@
                             <NavLink href="/login">Login</NavLink>
                             <NavLink href="/register">Register</NavLink>
                         </template>
+                        <div v-if="$page.props.auth.user" class="flex items-center">
+                            <div class="flex items-center ml-3">
+                                <div>
+                                    <button type="button"
+                                            class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-600"
+                                            aria-expanded="false" data-dropdown-toggle="dropdown-user">
+                                        <span class="sr-only">Open user menu</span>
+                                        <font-awesome-icon :icon="['fas', 'circle-user']" class="w-8 h-8 rounded-full object-contain text-white"/>
+                                    </button>
+                                </div>
+                                <div
+                                    class="z-50 hidden my-4 text-base list-none divide-y rounded shadow bg-gray-700 divide-gray-600"
+                                    id="dropdown-user">
+                                    <div class="px-4 py-3" role="none">
+                                        <p class="text-sm text-white" role="none">
+                                            {{ $page.props.auth.user.name }}
+                                        </p>
+                                        <p class="text-sm font-medium truncate text-gray-300" role="none">
+                                            {{ $page.props.auth.user.email }}
+                                        </p>
+                                    </div>
+                                    <ul class="py-1" role="none">
+                                        <li>
+                                            <DropdownLink :href="route('logout')" method="post" as="button">Sign out</DropdownLink>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </NavHeader>
                 </div>
             </div>
@@ -55,41 +82,26 @@
             <div class="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
                 <div class="md:flex md:justify-between">
                     <div class="mb-6 md:mb-0">
-                        <a href="https://flowbite.com/" class="flex items-center">
-                            <img src="@/Assets/Asset4.png" class="h-12 mr-3" alt="Flowbite Logo"/>
+                        <a href="https://assiway.id/" class="flex items-center">
+                            <img src="@/Assets/Asset4.png" class="h-12 mr-3" alt="Assiway Logo"/>
                         </a>
                     </div>
-                    <div class="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3">
+                    <div class="">
                         <div>
-                            <h2 class="mb-6 text-sm font-semibold uppercase text-white">Resources</h2>
+                            <h2 class="mb-6 text-sm font-semibold uppercase text-white">Contact Us</h2>
                             <ul class="text-gray-400  font-medium">
                                 <li class="mb-4">
-                                    <a href="https://flowbite.com/" class="hover:underline">Flowbite</a>
+                                    <p class="w-80">
+                                        Sentral Senayan 2, 11th floor
+                                        Jl. Asia Afrika No. 8, Gelora Bung Karno, Senayan,
+                                        Jakarta Pusat - Indonesia, 10270
+                                    </p>
                                 </li>
-                                <li>
-                                    <a href="https://tailwindcss.com/" class="hover:underline">Tailwind CSS</a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h2 class="mb-6 text-sm font-semibold uppercase text-white">Follow us</h2>
-                            <ul class="text-gray-400 font-medium">
                                 <li class="mb-4">
-                                    <a href="https://github.com/themesberg/flowbite" class="hover:underline ">Github</a>
-                                </li>
-                                <li>
-                                    <a href="https://discord.gg/4eeurUVvTy" class="hover:underline">Discord</a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h2 class="mb-6 text-sm font-semibold uppercase text-white">Legal</h2>
-                            <ul class="text-gray-400 font-medium">
-                                <li class="mb-4">
-                                    <a href="#" class="hover:underline">Privacy Policy</a>
-                                </li>
-                                <li>
-                                    <a href="#" class="hover:underline">Terms &amp; Conditions</a>
+                                    <font-awesome-icon :icon="['fas', 'phone']" class="w-4 h-4"/>
+                                    : <a href="tel:+622157974542">021.5797.4542</a> <br />
+                                    <font-awesome-icon :icon="['fas', 'envelope']" class="w-4 h-4"/>
+                                    : <a href = "mailto:info@assiway.id"> info@assiway.id</a>
                                 </li>
                             </ul>
                         </div>
@@ -97,8 +109,8 @@
                 </div>
                 <hr class="my-6  sm:mx-auto border-gray-700 lg:my-8"/>
                 <div class="sm:flex sm:items-center sm:justify-between">
-          <span class="text-sm text-gray-400 sm:text-center">© 2023 <a href="https://flowbite.com/"
-                                                                       class="hover:underline">Flowbite™</a>. All Rights Reserved.
+          <span class="text-sm text-gray-400 sm:text-center">© 2023 <a href="https://assiway.id/"
+                                                                       class="hover:underline">Assiway™</a>. All Rights Reserved.
           </span>
                     <div class="flex mt-4 space-x-5 sm:justify-center sm:mt-0">
                         <a href="#" class="text-gray-500 hover:text-white">
@@ -157,8 +169,11 @@
 import Nav from "../components/NavHeader.vue";
 import NavHeader from "../components/NavHeader.vue";
 import NavLink from "../components/NavLink.vue";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import Loading from "../components/Loading.vue";
+import DropdownLink from "@/Components/DropdownLink.vue";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import {initFlowbite} from "flowbite";
 
 const navActive = ref({
     home: true,
@@ -199,4 +214,8 @@ function toggleNav(val) {
         navActive.value.home = true
     }
 }
+
+onMounted(() => {
+    initFlowbite();
+})
 </script>
