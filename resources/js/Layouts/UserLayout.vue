@@ -28,11 +28,12 @@
                 </button>
                 <div class="hidden w-full md:block md:w-auto" id="navbar-default">
                     <NavHeader>
-                        <NavLink :active-link="navActive.home" href="/" @click="toggleNav(12)">Home</NavLink>
-                        <NavLink :active-link="navActive.profile" href="/profiles" @click="toggleNav(0)">Profile
+                        <NavLink :active="route().current('Home')" href="/">Home</NavLink>
+                        <NavLink :active="route().current('Profiles')" href="/profiles">Profile
                         </NavLink>
-                        <NavLink :active-link="navActive.licenses" href="#licenses" @click="toggleNav(2)">Book</NavLink>
-                        <NavLink v-if="$page.props.auth.user" :href="$page.props.auth.user.isAdmin === 1 ? '/admin/dashboard' : '/member/dashboard'">
+                        <NavLink :active="route().current('HomeBook')" href="/book">Book</NavLink>
+                        <NavLink v-if="$page.props.auth.user" :active="route().current('dashboardMember')"
+                                 :href="$page.props.auth.user.isAdmin === 1 ? '/admin/dashboard' : '/member/dashboard'">
                             {{ $page.props.auth.user.isAdmin === 1 ? 'Admin' : 'Member' }}
                         </NavLink>
                         <template v-else>
@@ -46,7 +47,8 @@
                                             class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-600"
                                             aria-expanded="false" data-dropdown-toggle="dropdown-user">
                                         <span class="sr-only">Open user menu</span>
-                                        <font-awesome-icon :icon="['fas', 'circle-user']" class="w-8 h-8 rounded-full object-contain text-white"/>
+                                        <font-awesome-icon :icon="['fas', 'circle-user']"
+                                                           class="w-8 h-8 rounded-full object-contain text-white"/>
                                     </button>
                                 </div>
                                 <div
@@ -62,7 +64,8 @@
                                     </div>
                                     <ul class="py-1" role="none">
                                         <li>
-                                            <DropdownLink :href="route('logout')" method="post" as="button">Sign out</DropdownLink>
+                                            <DropdownLink :href="route('logout')" method="post" as="button">Sign out
+                                            </DropdownLink>
                                         </li>
                                     </ul>
                                 </div>
@@ -99,9 +102,9 @@
                                 </li>
                                 <li class="mb-4">
                                     <font-awesome-icon :icon="['fas', 'phone']" class="w-4 h-4"/>
-                                    : <a href="tel:+622157974542">021.5797.4542</a> <br />
+                                    : <a href="tel:+622157974542">021.5797.4542</a> <br/>
                                     <font-awesome-icon :icon="['fas', 'envelope']" class="w-4 h-4"/>
-                                    : <a href = "mailto:info@assiway.id"> info@assiway.id</a>
+                                    : <a href="mailto:info@assiway.id"> info@assiway.id</a>
                                 </li>
                             </ul>
                         </div>
@@ -155,7 +158,7 @@
                                       d="M10 0a10 10 0 1 0 10 10A10.009 10.009 0 0 0 10 0Zm6.613 4.614a8.523 8.523 0 0 1 1.93 5.32 20.094 20.094 0 0 0-5.949-.274c-.059-.149-.122-.292-.184-.441a23.879 23.879 0 0 0-.566-1.239 11.41 11.41 0 0 0 4.769-3.366ZM8 1.707a8.821 8.821 0 0 1 2-.238 8.5 8.5 0 0 1 5.664 2.152 9.608 9.608 0 0 1-4.476 3.087A45.758 45.758 0 0 0 8 1.707ZM1.642 8.262a8.57 8.57 0 0 1 4.73-5.981A53.998 53.998 0 0 1 9.54 7.222a32.078 32.078 0 0 1-7.9 1.04h.002Zm2.01 7.46a8.51 8.51 0 0 1-2.2-5.707v-.262a31.64 31.64 0 0 0 8.777-1.219c.243.477.477.964.692 1.449-.114.032-.227.067-.336.1a13.569 13.569 0 0 0-6.942 5.636l.009.003ZM10 18.556a8.508 8.508 0 0 1-5.243-1.8 11.717 11.717 0 0 1 6.7-5.332.509.509 0 0 1 .055-.02 35.65 35.65 0 0 1 1.819 6.476 8.476 8.476 0 0 1-3.331.676Zm4.772-1.462A37.232 37.232 0 0 0 13.113 11a12.513 12.513 0 0 1 5.321.364 8.56 8.56 0 0 1-3.66 5.73h-.002Z"
                                       clip-rule="evenodd"/>
                             </svg>
-                            <span class="sr-only">Dribbble account</span>
+                            <span class="sr-only">Dribble account</span>
                         </a>
                     </div>
                 </div>
@@ -175,45 +178,9 @@ import DropdownLink from "@/Components/DropdownLink.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {initFlowbite} from "flowbite";
 
-const navActive = ref({
-    home: true,
-    profile: false,
-    whatWeDo: false,
-    licenses: false,
-    socialMedia: false,
-    contact: false
-})
 const props = defineProps({
     loading: Boolean
 })
-
-function toggleNav(val) {
-    navActive.value = {
-        profile: false,
-        whatWeDo: false,
-        licenses: false,
-        socialMedia: false,
-        contact: false
-    }
-    if (val === 0) {
-        navActive.value.profile = true
-    }
-    if (val === 1) {
-        navActive.value.whatWeDo = true
-    }
-    if (val === 2) {
-        navActive.value.licenses = true
-    }
-    if (val === 3) {
-        navActive.value.socialMedia = true
-    }
-    if (val === 4) {
-        navActive.value.contact = true
-    }
-    if (val === 12) {
-        navActive.value.home = true
-    }
-}
 
 onMounted(() => {
     initFlowbite();

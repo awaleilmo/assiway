@@ -59,6 +59,8 @@ Route::middleware('auth')->group(function () {
 
     Route::put('password', [PasswordController::class, 'update'])->name('password.update');
 
+    Route::get('book', [BookController::class, 'HomeIndex'])->name('HomeBook');
+
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
                 ->name('logout');
     Route::middleware(['verified', 'role:1'])->group(function () {

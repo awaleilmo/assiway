@@ -23,11 +23,11 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
-});
+})->name('Home');
 
 Route::get('/profiles', function () {
     return Inertia::render('Home/Profile');
-});
+})->name("Profiles");
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

@@ -29,6 +29,20 @@ class BookController extends Controller
         ]);
     }
 
+    public function HomeIndex(Request $request): inertiaResponse
+    {
+        $perPage = $request->get('perPage') ?: 10;
+        $search = $request->get('search') ?: '';
+        $column = $request->get('column') ?: 'name';
+        $book = Book::query()
+            ->whereRaw("UPPER(" . $column . ") LIKE '%" . strtoupper($search) . "%'")
+            ->orderBy('name', 'asc')
+            ->paginate($perPage);
+        return Inertia::render('Home/Library', [
+            'dataBooks' => $book
+        ]);
+    }
+
     public function createOrEdit(Request $request): RedirectResponse
     {
         try {

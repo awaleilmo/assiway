@@ -22,7 +22,8 @@ import {
     faChartPie,
     faUserGroup,
     faPhone,
-    faEnvelope
+    faEnvelope,
+    faCartShopping
 } from '@fortawesome/free-solid-svg-icons'
 library.add(
     faCircleUser,
@@ -35,7 +36,8 @@ library.add(
     faChartPie,
     faUserGroup,
     faPhone,
-    faEnvelope
+    faEnvelope,
+    faCartShopping
 )
 
 import { MotionPlugin } from '@vueuse/motion'

@@ -6,7 +6,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 
     <div class="max-w-sm m-2 bg-white border border-gray-200 rounded-lg shadow">
         <slot name="image">
-
+            <img src="https://flowbite.com/docs/images/blog/image-1.jpg" class="rounded-t-lg" alt="image"/>
         </slot>
         <div class="p-5">
 
@@ -24,16 +24,16 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
                     acquisitions of 2021 so far, in reverse chronological order.
                 </slot>
             </p>
-            <primary-button class="inline-flex items-center">
-                <slot name="button">
-                    Read more
+            <slot name="button">
+                <primary-button class="inline-flex items-center">
                     <svg class="w-3.5 h-3.5 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                          viewBox="0 0 14 10">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M1 5h12m0 0L9 1m4 4L9 9"/>
                     </svg>
-                </slot>
-            </primary-button>
+                </primary-button>
+                Read more
+            </slot>
         </div>
     </div>
 
