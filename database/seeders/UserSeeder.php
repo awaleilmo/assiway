@@ -18,7 +18,17 @@ class UserSeeder extends Seeder
                 'name' => 'admin',
                 'email' => 'admin@assiway.id',
                 'password' => bcrypt('admin1234'),
-                'isAdmin' => 1
+                'isAdmin' => 1,
+                'address' => fake()->address,
+                'phone' => '085692699715',
+                'gender' => 'L',
+                'photo' => null,
+                'date' => fake()->date,
+                'place' => fake()->city,
+                'typePhoto' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+                'email_verified_at' => now(),
             ],
         ]);
     }

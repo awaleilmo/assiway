@@ -8,6 +8,7 @@ import {useForm, usePage} from "@inertiajs/vue3";
 import Notification from "@/Components/Notification.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import Pagination from "@/Components/Pagination.vue";
 
 const loading = ref(true);
 
@@ -34,12 +35,42 @@ const alerts = ref({
     status: false,
     message: '',
 })
+const params= useForm({
+    perPage: 10,
+    search: '',
+    column: 'name',
+})
+const selected= ref(
+    [
+        {name: 'perPage', value: '10'},
+        {name: 'search', value: ''},
+        {name: 'column', value: 'name'},
+    ]
+)
 const buyButton = (value) => {
-    console.log('buy', value)
+    loading.value = true
+    let isLogin = usePage().props.auth.user
+    setTimeout(() => {
+        if (!isLogin) {
+            return location.href = '/login'
+        }
+    }, 3000)
 }
 
 onMounted(() => {
     initFlowbite();
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    if(queryString){
+        selected.value = []
+        urlParams.forEach((value, key) => {
+            params[key] = value
+            selected.value.push({
+                name: key,
+                value: value
+            })
+        })
+    }
     setTimeout(() => {
         loading.value = false
     }, 500)
@@ -53,11 +84,13 @@ onMounted(() => {
                 <!-- notification -->
                 <Notification :alerts="alerts"/>
 
-                <div class="max-w-[100%] flex flex-wrap justify-center">
+                <div class="max-w-[100%] flex flex-wrap justify-center"
+                    :class="{'h-[60vh]': dataBooks.data.length === 0}"
+                >
                     <card-with-image v-for="(item, index) in dataBooks.data" :key="index">
                         <template #image>
                             <img :src="item.coverType +','+ item.cover"
-                                 class="rounded-t-lg object-down object-top h-96 w-full" alt="image"/>
+                                 class="rounded-t-lg object-contain object-top h-96 w-full" alt="image"/>
                         </template>
                         <template #header>
                             {{ item.name }}
@@ -74,6 +107,9 @@ onMounted(() => {
                     </card-with-image>
                 </div>
             </div>
+        </div>
+        <div class="w-full bg-gray-900 py-4 rounded-t-2xl">
+            <Pagination :links="dataBooks.links" :params="selected" :url="dataBooks.path"/>
         </div>
     </UserLayout>
 </template>

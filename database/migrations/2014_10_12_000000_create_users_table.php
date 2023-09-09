@@ -19,6 +19,10 @@ return new class extends Migration
             $table->string('password');
             $table->integer('isAdmin')->default(0);
             $table->text('address')->nullable();
+            $table->date('date')->nullable();
+            $table->string('place')->nullable();
+            $table->string('phone', )->nullable();
+            $table->string('gender')->nullable();
             $table->string('typePhoto')->nullable();
             $table->longText('photo')->nullable();
             $table->rememberToken();

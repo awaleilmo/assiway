@@ -3,6 +3,8 @@ import {Link, useForm} from '@inertiajs/vue3';
 import InputLabel from '@/Components/InputLabel.vue';
 import Select from '@/Components/Select.vue';
 import {onMounted, ref} from "vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 const props = defineProps({
     links: {
@@ -63,61 +65,26 @@ onMounted(() => {
 <template>
     <div>
         <div class="flex justify-end flex-wrap my-3">
-            <InputLabel value="rows per page" class="px-3 py-2 mb-1 mr-1 text-xs leading-4 text-gray-400  font-normal"/>
+            <InputLabel value="rows per page" class="px-3 py-2 mb-1 mr-1 text-base leading-4 text-gray-200  font-semibold"/>
             <Select @change="change"
                     class="min-w-[48px] max-w-[100px] px-3 py-2 mb-1 mr-7 text-xs leading-4 text-gray-400  font-normal"
                     :data="perPages" :model-value="perPage" v-model="perPage"/>
             <template v-for="(link, key) in links">
-                <div
-                    v-if="link.url === null"
-                    :key="key"
-                    class="
-                        px-3
-                        py-2
-                        mb-1
-                        mr-1
-                        text-xs
-                        leading-4
-                        text-gray-400
-                        border
-                        rounded
-                    "
-                    v-html="link.label"
-                />
+                <primary-button  v-if="link.url === null" :key="key" :class="{ 'opacity-50': true }"
+                                 :disabled="true"
+                                 class="
+                                        mb-1
+                                        mr-1
+                                        text-sm
+                                    "
+                                 v-html="link.label"/>
                 <div v-else class="mb-1 mr-1">
-                    <div
-                        v-if="link.active"
-                        :key="key"
-                        class="
-                        px-3
-                        py-2
-                        text-xs
-                        leading-4
-                        border
-                        rounded
-                        bg-blue-50
-                        text-gray-400
-                        border-blue-100
-                    "
-                        v-html="link.label"
-                    />
-                    <Link
-                        v-else
-                        class="
-                        flex items-center
-                        px-3
-                        py-2
-                        text-xs
-                        leading-4
-                        border
-                        rounded
-                        hover:bg-white
-                        focus:border-indigo-500 focus:text-indigo-500
-                    "
-                        :class="{ 'bg-white text-black': link.active ? '' : '' }"
-                        :href="link.url+parameter"
-                        v-html="link.label"
-                    />
+                    <primary-button  v-if="link.active" :key="key" :class="{ 'opacity-20': link.active }"
+                                     :disabled="true"
+                                     v-html="link.label"/>
+                    <a v-else :href="link.url + parameter">
+                        <primary-button v-html="link.label" />
+                    </a>
                 </div>
             </template>
         </div>

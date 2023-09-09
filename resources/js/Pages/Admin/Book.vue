@@ -99,8 +99,7 @@ const displayFunction = () => {
     }
     setTimeout(() => {
         location.reload()
-        progressLoading.value = false
-    }, 3000)
+    }, 4000)
 }
 const editFunction = () => {
     let rawData = datatable.value.$refs.datatab.selectedRows

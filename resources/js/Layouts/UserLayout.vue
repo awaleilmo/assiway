@@ -11,10 +11,10 @@
 <template>
     <div class="min-h-screen bg-pattrent bg-gray-900 max-w-full">
         <nav
-            class="bg-gradient-to-bl from-gray-900 to-gray-900/50 absolute md:fixed w-full z-40 top-0 left-0 border-gray-200 dark:bg-gray-900 shadow-lg">
+            class="bg-gradient-to-bl from-gray-900 to-gray-900/50 absolute md:fixed w-full z-30 top-0 left-0 border-gray-200 dark:bg-gray-900 shadow-lg">
             <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
                 <a href="/" class="flex items-center">
-                    <img src="@/Assets/Asset4.png" class="h-8 mr-3" alt="Flowbite Logo"/>
+                    <img src="@/Assets/Asset4.png" class="h-8 mr-3" alt="Assiway Logo"/>
                 </a>
                 <button data-collapse-toggle="navbar-default" type="button"
                         class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
@@ -64,6 +64,10 @@
                                     </div>
                                     <ul class="py-1" role="none">
                                         <li>
+                                            <p @click="activeAccount = true" class="block cursor-pointer px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white">Account
+                                            </p>
+                                        </li>
+                                        <li>
                                             <DropdownLink :href="route('logout')" method="post" as="button">Sign out
                                             </DropdownLink>
                                         </li>
@@ -79,7 +83,7 @@
         <!--    <div class="w-full min-h-screen flex justify-center text-blue-500 bg-transparent">-->
         <slot/>
         <!--    </div>-->
-
+        <FloatAccount v-if="$page.props.auth.user" :show="activeAccount" @close="activeAccount=false" />
 
         <footer class="bg-gray-700">
             <div class="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
@@ -177,10 +181,13 @@ import Loading from "../components/Loading.vue";
 import DropdownLink from "@/Components/DropdownLink.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {initFlowbite} from "flowbite";
+import FloatAccount from "@/Layouts/FloatAccount.vue";
 
 const props = defineProps({
     loading: Boolean
 })
+
+const activeAccount = ref(false);
 
 onMounted(() => {
     initFlowbite();
