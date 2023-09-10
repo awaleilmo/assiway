@@ -47,8 +47,11 @@
                                             class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-600"
                                             aria-expanded="false" data-dropdown-toggle="dropdown-user">
                                         <span class="sr-only">Open user menu</span>
-                                        <font-awesome-icon :icon="['fas', 'circle-user']"
+                                        <font-awesome-icon v-if="!$page.props.auth.user.typePhoto" :icon="['fas', 'circle-user']"
                                                            class="w-8 h-8 rounded-full object-contain text-white"/>
+                                        <img v-else class="w-8 h-8 rounded-full object-contain"
+                                             :src="$page.props.auth.user.typePhoto+','+$page.props.auth.user.photo"
+                                             alt="photo profile"/>
                                     </button>
                                 </div>
                                 <div
@@ -64,7 +67,9 @@
                                     </div>
                                     <ul class="py-1" role="none">
                                         <li>
-                                            <p @click="activeAccount = true" class="block cursor-pointer px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white">Account
+                                            <p @click="activeAccount = true"
+                                               class="block cursor-pointer px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white">
+                                                Account
                                             </p>
                                         </li>
                                         <li>
@@ -83,7 +88,7 @@
         <!--    <div class="w-full min-h-screen flex justify-center text-blue-500 bg-transparent">-->
         <slot/>
         <!--    </div>-->
-        <FloatAccount v-if="$page.props.auth.user" :show="activeAccount" @close="activeAccount=false" />
+        <FloatAccount v-if="$page.props.auth.user" :show="activeAccount" @close="activeAccount=false"/>
 
         <footer class="bg-gray-700">
             <div class="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">

@@ -9,6 +9,7 @@ import Notification from "@/Components/Notification.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import Pagination from "@/Components/Pagination.vue";
+import Modal from "@/Components/Modal.vue";
 
 const loading = ref(true);
 
@@ -53,6 +54,22 @@ const buyButton = (value) => {
     setTimeout(() => {
         if (!isLogin) {
             return location.href = '/login'
+        }else{
+            let dateOfBirth = isLogin.date
+            let placeOfBirth = isLogin.place
+            let gender = isLogin.gender
+            let address = isLogin.address
+            let phone = isLogin.phone
+            let typePhoto = isLogin.typePhoto
+            if( dateOfBirth === null || placeOfBirth === null || gender === null || address === null || phone === null || typePhoto === null){
+                loading.value = false
+                show.value = true
+                return alerts.value = {
+                    color: 'bg-red-50 text-red-600',
+                    status: true,
+                    message: 'Silakan isi semua data akun anda terlebih dahulu, sebelum melakukan pembelian',
+                }
+            }
         }
     }, 3000)
 }
@@ -112,6 +129,20 @@ onMounted(() => {
             <Pagination :links="dataBooks.links" :params="selected" :url="dataBooks.path"/>
         </div>
     </UserLayout>
+    <Modal :show="show" @close="show=false">
+        <div
+             :class="'p-4 text-sm rounded-lg flex items-center '+alerts.color"
+        >
+                        <span class="font-medium">
+                        {{ alerts.message }}
+                        </span>
+            <button @click="show=false" type="button"
+                    class=" text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center">
+                <font-awesome-icon icon="fa-solid fa-close"/>
+                <span class="sr-only">Close modal</span>
+            </button>
+        </div>
+    </Modal>
 </template>
 
 <style scoped>

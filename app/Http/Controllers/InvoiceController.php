@@ -57,7 +57,7 @@ class InvoiceController extends Controller
             $form->save();
             return Redirect::back()->with('response', [
                 'status' => true,
-                'color' => 'bg-green-50 text-green-600',
+                'color' => 'bg-green-100 text-green-600',
                 'message' => 'Data has been saved',
             ]);
         } catch (Throwable $th) {
@@ -102,7 +102,7 @@ class InvoiceController extends Controller
             $form->save();
             return Redirect::back()->with('response', [
                 'status' => true,
-                'color' => 'bg-green-50 text-green-600',
+                'color' => 'bg-green-100 text-green-600',
                 'message' => 'Data has been saved',
             ]);
         } catch (Throwable $th) {
