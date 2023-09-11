@@ -1,7 +1,8 @@
 import axios from "axios";
 
 
-const API_URL = '/admin/invoice';
+const API_URL_ADMIN = '/admin/invoice';
+const API_URL_MEMBER = '/member/invoice';
 
 class Invoice {
     service(method, url, data) {
@@ -18,7 +19,11 @@ class Invoice {
             });
     }
     updateStatus(data) {
-        return this.service('post', API_URL+'/status', data);
+        return this.service('post', API_URL_ADMIN+'/status', data);
+    }
+
+    createInvoiceMember(data) {
+        return this.service('post', API_URL_MEMBER, data);
     }
 }
 

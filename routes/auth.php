@@ -73,7 +73,6 @@ Route::middleware('auth')->group(function () {
             Route::post('/book/status', [BookController::class, 'updateStatus']);
 
             Route::get('/invoice', [InvoiceController::class, 'adminIndex'])->name('invoiceAdmin');
-            Route::post('/invoice', [InvoiceController::class, 'create']);
             Route::post('/invoice/status', [InvoiceController::class, 'updateStatus']);
         });
     });
@@ -81,6 +80,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware(['verified', 'role:0'])->group(function () {
         Route::prefix('member')->group( function () {
             Route::get('/dashboard', [BaseController::class, 'dashboardMember'])->name('dashboardMember');
+            Route::post('/invoice', [InvoiceController::class, 'create']);
         });
     });
 });

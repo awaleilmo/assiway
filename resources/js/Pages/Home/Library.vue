@@ -10,10 +10,10 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import Pagination from "@/Components/Pagination.vue";
 import Modal from "@/Components/Modal.vue";
-import InputLabel from "@/Components/InputLabel.vue";
-import TextInputArea from "@/Components/TextInputArea.vue";
 import ProgressBar from "@/Components/ProgressBar.vue";
-import TextInput from "@/Components/TextInput.vue";
+import {formatter} from "@/Configuration/sys.js";
+import SuccessButton from "@/Components/SuccessButton.vue";
+import InvoiceModel from "@/Model/InvoiceModel.js"
 
 const loading = ref(true);
 
@@ -100,6 +100,54 @@ const buyButton = (value) => {
         loading.value = false
     }, 3000)
 }
+const bayarSave = () => {
+    loading.value = true
+    showInvoice.value = false
+    let isLogin = usePage().props.auth.user
+    setTimeout(async () => {
+        if (!isLogin) {
+            return location.href = '/login'
+        }
+        let dateOfBirth = isLogin.date
+        let placeOfBirth = isLogin.place
+        let gender = isLogin.gender
+        let address = isLogin.address
+        let phone = isLogin.phone
+        let typePhoto = isLogin.typePhoto
+        if (dateOfBirth === null || placeOfBirth === null || gender === null || address === null || phone === null || typePhoto === null) {
+            loading.value = false
+            show.value = true
+            return alerts.value = {
+                color: 'bg-red-50 text-red-600',
+                status: true,
+                message: 'Silakan isi semua data akun anda terlebih dahulu, sebelum melakukan pembelian',
+            }
+        }
+        let saveData = await InvoiceModel.createInvoice(formInvoice)
+        if(saveData.success){
+            loading.value = false
+            let data = saveData.data
+            let inv = "'"+data.contents.noInvoice.split('#')[1]+"'"
+            let text = `Hallo, Nama Saya ${usePage().props.auth.user.name} ` +
+                'saya ingin beli buku\n' +
+                ` -Nama Buku: ${formInvoice.title}\n` +
+                ` -Harga: Rp ${formatter.format(formInvoice.price)}\n` +
+                ` -no Invoice: ${inv}\n`
+            const whatsappMessage = window.encodeURIComponent(text);
+            const url = `https://api.whatsapp.com/send?phone=6285692699715&text=${whatsappMessage}`
+            formInvoice.reset()
+            return window.open(url)
+        }
+        loading.value = false
+        return alerts.value = {
+            color: 'bg-red-50 text-red-600',
+            status: true,
+            message: saveData.data.message,
+        }
+
+    }, 2000)
+}
+
 
 onMounted(() => {
     initFlowbite();
@@ -144,7 +192,7 @@ onMounted(() => {
                         </template>
                         <template #button>
                             <primary-button class="inline-flex items-center" @click="buyButton(item)">
-                                Buy Now
+                                Beli
                                 <font-awesome-icon :icon="['fas', 'shopping-cart']" class="w-4 h-4 ml-2"/>
                             </primary-button>
                         </template>
@@ -170,7 +218,7 @@ onMounted(() => {
             </button>
         </div>
     </Modal>
-    <Modal v-if="usePage().props.auth.user" max-width="4xl" :show="showInvoice" @close="showInvoice=false">
+    <Modal v-if="usePage().props.auth.user" max-width="lg" :show="showInvoice" @close="showInvoice=false">
         <div class="relative">
             <!-- Modal content -->
             <div class="relative bg-white rounded-lg shadow">
@@ -186,27 +234,43 @@ onMounted(() => {
                         Invoice
                     </h3>
                 </div>
-
-                <form @submit.prevent="" enctype="multipart/form-data">
-                    <!-- Modal body -->
-                    <div v-if="!formInvoice.processing" class="p-6 grid grid-cols-2 gap-3">
-                        <h2 class="text-base font-semibold text-gray-900 lg:text-2xl ">
-                            {{ formInvoice.title }}
-                        </h2>
+                <!-- Modal body -->
+                <div v-if="!formInvoice.processing" class="p-6 gap-4 flex flex-col">
+                    <h2 class="text-base font-semibold text-gray-900 lg:text-3xl ">
+                        {{ formInvoice.title }}
+                    </h2>
+                    <div>
+                        <img :src="formInvoice.coverType +','+ formInvoice.cover"
+                             class=" object-cover h-[80vh] w-full" alt="image"/>
+                        <p class="text-gray-700 font-medium italic">
+                            Publisher: {{ formInvoice.publisher }}, Year: {{ formInvoice.year }}
+                        </p>
                     </div>
-
-                    <div v-if="formInvoice.processing" class="p-6">
-                        <ProgressBar v-if="formInvoice.progress" title="Upload File"
-                                     :progress="formInvoice.progress.percentage"/>
+                    <div>
+                        <h3 class="text-base font-semibold text-gray-900 lg:text-xl mb-2">
+                            Spoiler
+                        </h3>
+                        <p class="p-3 rounded text-gray-700 font-medium  bg-gray-200">
+                            {{ formInvoice.description }}
+                        </p>
+                        <p class="pt-6 px-3 rounded text-gray-700 font-medium sm:text-2xl">
+                            Price : Rp {{ formatter.format(formInvoice.price) }}
+                        </p>
                     </div>
+                </div>
 
-                    <!-- Modal footer -->
-                    <div v-if="!formInvoice.processing" class="px-4 py-2 flex justify-end border-t rounded-b bg-gray-100 ">
-                        <primary-button type="submit">
-                            Save
-                        </primary-button>
-                    </div>
-                </form>
+                <div v-if="formInvoice.processing" class="p-6">
+                    <ProgressBar v-if="formInvoice.progress" title="Upload File"
+                                 :progress="formInvoice.progress.percentage"/>
+                </div>
+
+                <!-- Modal footer -->
+                <div v-if="!formInvoice.processing"
+                     class="px-4 py-2 flex justify-end border-t rounded-b bg-gray-100 ">
+                    <success-button type="button" @click="bayarSave">
+                        Bayar Sekarang
+                    </success-button>
+                </div>
             </div>
         </div>
     </Modal>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Invoice;
 use App\Models\Library;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -32,7 +33,7 @@ class InvoiceController extends Controller
         ]);
     }
 
-    public function create(Request $request): RedirectResponse
+    public function create(Request $request): JsonResponse
     {
         try{
             $validate = Validator::make($request->all(), [
@@ -41,10 +42,19 @@ class InvoiceController extends Controller
                 'price' => 'required',
             ]);
             if ($validate->fails()) {
-                return Redirect::back()->with('response', [
+                return response()->json([
                     'status' => false,
                     'color' => 'bg-red-50 text-red-600',
                     'message' => $validate->errors()->first(),
+                ]);
+            }
+            $validateDuplicate = Invoice::query()->where('book_id', $request->get('book_id'))->where('user_id', $request->get('user_id'))->first();
+            if($validateDuplicate){
+                return response()->json([
+                    'status' => false,
+                    'color' => 'bg-red-50 text-red-600',
+                    'message' => 'Kamu sudah memesan buku yang sama, Lihat Di menu invoice',
+                    'contents' => $validateDuplicate
                 ]);
             }
             $tanggal = Carbon::now()->format('YmdHis');
@@ -55,16 +65,18 @@ class InvoiceController extends Controller
             $form->setAttribute('price', $request->get('price'));
             $form->setAttribute('status', 0);
             $form->save();
-            return Redirect::back()->with('response', [
-                'status' => true,
-                'color' => 'bg-green-100 text-green-600',
-                'message' => 'Data has been saved',
+            return response()->json([
+                'status' => false,
+                'color' => 'bg-red-50 text-red-600',
+                'message' => 'data has been saved',
+                'contents' => $form
             ]);
         } catch (Throwable $th) {
-            return Redirect::back()->with('response', [
+            return response()->json([
                 'status' => false,
                 'color' => 'bg-red-50 text-red-600',
                 'message' => $th->getMessage(),
+                'contents' => []
             ]);
         }
     }
