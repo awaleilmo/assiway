@@ -42,7 +42,7 @@ const close = () => {
         leave-to-class="opacity-0"
     >
         <div v-if="alerts.status"
-             :class="'p-4 mb-4 text-sm rounded-lg flex items-center '+alerts.color"
+             :class="'p-4 text-sm rounded-lg flex items-center '+alerts.color"
         >
                         <span class="font-medium">
                         {{ alerts.message }}

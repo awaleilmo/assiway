@@ -10,6 +10,10 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import Pagination from "@/Components/Pagination.vue";
 import Modal from "@/Components/Modal.vue";
+import InputLabel from "@/Components/InputLabel.vue";
+import TextInputArea from "@/Components/TextInputArea.vue";
+import ProgressBar from "@/Components/ProgressBar.vue";
+import TextInput from "@/Components/TextInput.vue";
 
 const loading = ref(true);
 
@@ -31,46 +35,69 @@ const columns = [
     {label: 'File', field: 'file', search: true, sortable: true, width: '100px'},
 ]
 const show = ref(false)
+const showInvoice = ref(false)
 const alerts = ref({
     color: 'bg-red-50 text-red-600',
     status: false,
     message: '',
 })
-const params= useForm({
+const params = useForm({
     perPage: 10,
     search: '',
     column: 'name',
 })
-const selected= ref(
+const selected = ref(
     [
         {name: 'perPage', value: '10'},
         {name: 'search', value: ''},
         {name: 'column', value: 'name'},
     ]
 )
+const formInvoice = useForm({
+    user_id: usePage().props.auth.user ? usePage().props.auth.user.id : null,
+    book_id: null,
+    price: null,
+    status: null,
+    coverType: null,
+    cover: null,
+    description: null,
+    title: null,
+    year: null,
+    publisher: null,
+})
 const buyButton = (value) => {
     loading.value = true
     let isLogin = usePage().props.auth.user
     setTimeout(() => {
         if (!isLogin) {
             return location.href = '/login'
-        }else{
-            let dateOfBirth = isLogin.date
-            let placeOfBirth = isLogin.place
-            let gender = isLogin.gender
-            let address = isLogin.address
-            let phone = isLogin.phone
-            let typePhoto = isLogin.typePhoto
-            if( dateOfBirth === null || placeOfBirth === null || gender === null || address === null || phone === null || typePhoto === null){
-                loading.value = false
-                show.value = true
-                return alerts.value = {
-                    color: 'bg-red-50 text-red-600',
-                    status: true,
-                    message: 'Silakan isi semua data akun anda terlebih dahulu, sebelum melakukan pembelian',
-                }
+        }
+        let dateOfBirth = isLogin.date
+        let placeOfBirth = isLogin.place
+        let gender = isLogin.gender
+        let address = isLogin.address
+        let phone = isLogin.phone
+        let typePhoto = isLogin.typePhoto
+        if (dateOfBirth === null || placeOfBirth === null || gender === null || address === null || phone === null || typePhoto === null) {
+            loading.value = false
+            show.value = true
+            return alerts.value = {
+                color: 'bg-red-50 text-red-600',
+                status: true,
+                message: 'Silakan isi semua data akun anda terlebih dahulu, sebelum melakukan pembelian',
             }
         }
+        showInvoice.value = true
+        formInvoice.book_id = value.id
+        formInvoice.price = value.price
+        formInvoice.status = 0
+        formInvoice.coverType = value.coverType
+        formInvoice.cover = value.cover
+        formInvoice.description = value.description
+        formInvoice.title = value.name
+        formInvoice.year = value.years
+        formInvoice.publisher = value.publisher
+        loading.value = false
     }, 3000)
 }
 
@@ -78,7 +105,7 @@ onMounted(() => {
     initFlowbite();
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
-    if(queryString){
+    if (queryString) {
         selected.value = []
         urlParams.forEach((value, key) => {
             params[key] = value
@@ -102,7 +129,7 @@ onMounted(() => {
                 <Notification :alerts="alerts"/>
 
                 <div class="max-w-[100%] flex flex-wrap justify-center"
-                    :class="{'h-[60vh]': dataBooks.data.length === 0}"
+                     :class="{'h-[60vh]': dataBooks.data.length === 0}"
                 >
                     <card-with-image v-for="(item, index) in dataBooks.data" :key="index">
                         <template #image>
@@ -131,7 +158,7 @@ onMounted(() => {
     </UserLayout>
     <Modal :show="show" @close="show=false">
         <div
-             :class="'p-4 text-sm rounded-lg flex items-center '+alerts.color"
+            :class="'p-4 text-sm rounded-lg flex items-center '+alerts.color"
         >
                         <span class="font-medium">
                         {{ alerts.message }}
@@ -141,6 +168,46 @@ onMounted(() => {
                 <font-awesome-icon icon="fa-solid fa-close"/>
                 <span class="sr-only">Close modal</span>
             </button>
+        </div>
+    </Modal>
+    <Modal v-if="usePage().props.auth.user" max-width="4xl" :show="showInvoice" @close="showInvoice=false">
+        <div class="relative">
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow">
+                <button @click="showInvoice=false" type="button"
+                        class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
+                        data-modal-hide="crypto-modal">
+                    <font-awesome-icon icon="fa-solid fa-close"/>
+                    <span class="sr-only">Close modal</span>
+                </button>
+                <!-- Modal header -->
+                <div class="px-6 py-4 border-b rounded-t bg-gray-100">
+                    <h3 class="text-base font-semibold text-gray-900 lg:text-xl ">
+                        Invoice
+                    </h3>
+                </div>
+
+                <form @submit.prevent="" enctype="multipart/form-data">
+                    <!-- Modal body -->
+                    <div v-if="!formInvoice.processing" class="p-6 grid grid-cols-2 gap-3">
+                        <h2 class="text-base font-semibold text-gray-900 lg:text-2xl ">
+                            {{ formInvoice.title }}
+                        </h2>
+                    </div>
+
+                    <div v-if="formInvoice.processing" class="p-6">
+                        <ProgressBar v-if="formInvoice.progress" title="Upload File"
+                                     :progress="formInvoice.progress.percentage"/>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div v-if="!formInvoice.processing" class="px-4 py-2 flex justify-end border-t rounded-b bg-gray-100 ">
+                        <primary-button type="submit">
+                            Save
+                        </primary-button>
+                    </div>
+                </form>
+            </div>
         </div>
     </Modal>
 </template>
