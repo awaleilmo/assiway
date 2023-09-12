@@ -148,7 +148,6 @@ const bayarSave = () => {
     }, 2000)
 }
 
-
 onMounted(() => {
     initFlowbite();
     const queryString = window.location.search;

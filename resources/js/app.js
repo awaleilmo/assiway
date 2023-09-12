@@ -23,7 +23,10 @@ import {
     faUserGroup,
     faPhone,
     faEnvelope,
-    faCartShopping
+    faCartShopping,
+    faPaperPlane,
+    faBan,
+    faClipboardCheck
 } from '@fortawesome/free-solid-svg-icons'
 library.add(
     faCircleUser,
@@ -37,7 +40,10 @@ library.add(
     faUserGroup,
     faPhone,
     faEnvelope,
-    faCartShopping
+    faCartShopping,
+    faPaperPlane,
+    faBan,
+    faClipboardCheck
 )
 
 import { MotionPlugin } from '@vueuse/motion'

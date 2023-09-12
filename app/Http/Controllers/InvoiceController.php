@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
@@ -26,9 +27,28 @@ class InvoiceController extends Controller
             ->leftJoin('books', 'books.id', '=', 'invoices.book_id')
             ->leftJoin('users', 'users.id', '=', 'invoices.user_id')
             ->select('invoices.*', 'books.name as book_name', 'users.name as user_name')
-            ->orderBy('invoices.noInvoice', 'asc')
+            ->orderBy('invoices.noInvoice')
             ->paginate($perPage);
         return Inertia::render('Admin/Invoice', [
+            'dataInvoice' => $invoice
+        ]);
+    }
+
+    public function memberIndex(Request $request): inertiaResponse
+    {
+        $perPage = $request->get('perPage') ?: 10;
+        $search = $request->get('search') ?: '';
+        $column = $request->get('column') ?: 'noInvoice';
+        $userId = Auth::user()['id'];
+        $invoice = Invoice::query()
+            ->whereRaw("UPPER(invoices." . $column . ") LIKE '%" . strtoupper($search) . "%'")
+            ->where('invoices.user_id', $userId)
+            ->leftJoin('books', 'books.id', '=', 'invoices.book_id')
+            ->leftJoin('users', 'users.id', '=', 'invoices.user_id')
+            ->select('invoices.*', 'books.name as book_name', 'users.name as user_name')
+            ->orderBy('invoices.noInvoice')
+            ->paginate($perPage);
+        return Inertia::render('Member/Invoice', [
             'dataInvoice' => $invoice
         ]);
     }
@@ -44,15 +64,15 @@ class InvoiceController extends Controller
             if ($validate->fails()) {
                 return response()->json([
                     'status' => false,
-                    'color' => 'bg-red-50 text-red-600',
+                    'color' => 'bg-red-50 text-red-600 border border-red-400',
                     'message' => $validate->errors()->first(),
                 ]);
             }
             $validateDuplicate = Invoice::query()->where('book_id', $request->get('book_id'))->where('user_id', $request->get('user_id'))->first();
             if($validateDuplicate){
                 return response()->json([
-                    'status' => false,
-                    'color' => 'bg-red-50 text-red-600',
+                    'status' => true,
+                    'color' => 'bg-green-100 text-green-600 border border-green-400',
                     'message' => 'Kamu sudah memesan buku yang sama, Lihat Di menu invoice',
                     'contents' => $validateDuplicate
                 ]);
@@ -66,15 +86,15 @@ class InvoiceController extends Controller
             $form->setAttribute('status', 0);
             $form->save();
             return response()->json([
-                'status' => false,
-                'color' => 'bg-red-50 text-red-600',
+                'status' => true,
+                'color' => 'bg-green-100 text-green-600 border border-green-400',
                 'message' => 'data has been saved',
                 'contents' => $form
             ]);
         } catch (Throwable $th) {
             return response()->json([
                 'status' => false,
-                'color' => 'bg-red-50 text-red-600',
+                'color' => 'bg-red-50 text-red-600 border border-red-400',
                 'message' => $th->getMessage(),
                 'contents' => []
             ]);
@@ -91,7 +111,7 @@ class InvoiceController extends Controller
             if ($validate->fails()) {
                 return Redirect::back()->with('response', [
                     'status' => false,
-                    'color' => 'bg-red-50 text-red-600',
+                    'color' => 'bg-red-50 text-red-600 border border-red-400',
                     'message' => $validate->errors()->first(),
                 ]);
             }
@@ -106,7 +126,7 @@ class InvoiceController extends Controller
                 } catch (Throwable $th) {
                     return Redirect::back()->with('response', [
                         'status' => false,
-                        'color' => 'bg-red-50 text-red-600',
+                        'color' => 'bg-red-50 text-red-600 border border-red-400',
                         'message' => $th->getMessage(),
                     ]);
                 }
@@ -114,14 +134,50 @@ class InvoiceController extends Controller
             $form->save();
             return Redirect::back()->with('response', [
                 'status' => true,
-                'color' => 'bg-green-100 text-green-600',
+                'color' => 'bg-green-100 text-green-600 border border-green-400',
                 'message' => 'Data has been saved',
             ]);
         } catch (Throwable $th) {
             return Redirect::back()->with('response', [
                 'status' => false,
-                'color' => 'bg-red-50 text-red-600',
+                'color' => 'bg-red-50 text-red-600 border border-red-400',
                 'message' => $th->getMessage(),
+            ]);
+        }
+    }
+
+    public function paid(Request $request): JsonResponse
+    {
+        try{
+            $validate = Validator::make($request->all(), [
+                'id' => 'required',
+            ]);
+            if ($validate->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'color' => 'bg-red-50 text-red-600 border border-red-400',
+                    'message' => $validate->errors()->first(),
+                ]);
+            }
+            $form = Invoice::query()->find($request->get('id'));
+            $form->setAttribute('status', 1);
+            $form->save();
+            $library = new Library();
+            $library->setAttribute('user_id', $form->getAttribute('user_id'));
+            $library->setAttribute('book_id', $form->getAttribute('book_id'));
+            $library->save();
+            return response()->json([
+                'status' => true,
+                'color' => 'bg-green-100 text-green-600 border border-green-400',
+                'message' => 'data has been saved',
+                'contents' => $form
+            ]);
+        } catch (Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'color' => 'bg-red-50 text-red-600 border border-red-400',
+                'message' => $th->getMessage(),
+                'contents' => []
             ]);
         }
     }

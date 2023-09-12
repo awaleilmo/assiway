@@ -37,6 +37,17 @@ const alerts = ref({
     status: false,
     message: '',
 })
+const sudahBayar = () =>{
+    let rawData = datatable.value.$refs.datatab.selectedRows
+    if (rawData.length === 0 ) {
+        alerts.value.status = true
+        alerts.value.message = 'Please select at least one menu'
+        alerts.value.color = 'bg-red-50 text-red-600 border border-red-400'
+        return;
+    }
+    let data = rawData[0]
+    console.log(data, 'sudah bayar')
+}
 
 </script>
 
@@ -51,6 +62,18 @@ const alerts = ref({
                 <div class="max-w-[100%] mx-auto sm:px-6 lg:px-8">
                     <!-- notification -->
                     <Notification :alerts="alerts"/>
+                    <!--  button  -->
+                    <div class="px-3 py-4 flex justify-end">
+                        <primary-button class="mx-1 pl-3 pr-3" @click="sudahBayar">
+                            <font-awesome-icon icon="fa-solid fa-clipboard-check" class="mx-1"/>
+                            Sudah Bayar
+                        </primary-button>
+                        <danger-button class="mx-1 pl-3 pr-3" @click="displayFunction">
+                            <font-awesome-icon icon="fa-solid fa-ban" class="mx-1"/>
+                            Tolak
+                        </danger-button>
+                    </div>
+
                     <AkuTable
                         :data-table="dataInvoice"
                         :column="columns"
@@ -60,11 +83,14 @@ const alerts = ref({
                         ref="datatable"
                     >
                         <template #table-row="props">
+                             <span v-if="props.column.field === 'price'">
+                                {{ formatter.format(props.row.price) }}
+                            </span>
                             <span v-if="props.column.field === 'status'">
-                                <badge v-if="props.row.status === 1" color-props="yellow" font-width="base" border-props>Belum Bayar</badge>
-                                <badge v-if="props.row.status === 2" color-props="indigo" font-width="base" border-props>Sudah Bayar</badge>
-                                <badge v-if="props.row.status === 3" color-props="green" font-width="base" border-props>Selesai</badge>
-                                <badge v-if="props.row.status === 4" color-props="Red" font-width="base" border-props>Di Tolak</badge>
+                                <badge v-if="props.row.status === 0" color-props="yellow" font-width="base" border-props>Belum Bayar</badge>
+                                <badge v-if="props.row.status === 1" color-props="indigo" font-width="base" border-props>Sudah Bayar</badge>
+                                <badge v-if="props.row.status === 2" color-props="green" font-width="base" border-props>Selesai</badge>
+                                <badge v-if="props.row.status === 3" color-props="Red" font-width="base" border-props>Di Tolak</badge>
                             </span>
                         </template>
                     </AkuTable>

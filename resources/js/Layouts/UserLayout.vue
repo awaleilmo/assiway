@@ -1,4 +1,3 @@
-<!-- <project version="4"> -->
 <style>
 .bg-pattrent {
     background-attachment: fixed;
@@ -32,10 +31,15 @@
                         <NavLink :active="route().current('Profiles')" href="/profiles">Profile
                         </NavLink>
                         <NavLink :active="route().current('HomeBook')" href="/book">Book</NavLink>
-                        <NavLink v-if="$page.props.auth.user" :active="route().current('dashboardMember')"
-                                 :href="$page.props.auth.user.isAdmin === 1 ? '/admin/dashboard' : '/member/dashboard'">
-                            {{ $page.props.auth.user.isAdmin === 1 ? 'Admin' : 'Member' }}
-                        </NavLink>
+                        <template v-if="$page.props.auth.user">
+                            <NavLink :active="route().current('invoiceMember')"
+                                     href="/member/invoice">Invoice
+                            </NavLink>
+                            <NavLink :active="route().current('dashboardMember')"
+                                     :href="$page.props.auth.user.isAdmin === 1 ? '/admin/dashboard' : '/member/dashboard'">
+                                {{ $page.props.auth.user.isAdmin === 1 ? 'Admin' : 'Member' }}
+                            </NavLink>
+                        </template>
                         <template v-else>
                             <NavLink href="/login">Login</NavLink>
                             <NavLink href="/register">Register</NavLink>
@@ -47,7 +51,8 @@
                                             class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-600"
                                             aria-expanded="false" data-dropdown-toggle="dropdown-user">
                                         <span class="sr-only">Open user menu</span>
-                                        <font-awesome-icon v-if="!$page.props.auth.user.typePhoto" :icon="['fas', 'circle-user']"
+                                        <font-awesome-icon v-if="!$page.props.auth.user.typePhoto"
+                                                           :icon="['fas', 'circle-user']"
                                                            class="w-8 h-8 rounded-full object-contain text-white"/>
                                         <img v-else class="w-8 h-8 rounded-full object-contain"
                                              :src="$page.props.auth.user.typePhoto+','+$page.props.auth.user.photo"
