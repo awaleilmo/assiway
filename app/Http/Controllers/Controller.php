@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Book;
 use App\Models\Library;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -32,5 +33,13 @@ class Controller extends BaseController
             'dataBooks' => $myBook
         ]);
 
+    }
+
+    public function homeIndex(Request $request): inertiaResponse
+    {
+        $myBook = Book::query()->where('display',1)->get();
+        return Inertia::render('Home/Index', [
+            'dataBooks' => $myBook
+        ]);
     }
 }

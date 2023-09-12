@@ -9,10 +9,6 @@ class InvoiceModel {
     createInvoice(data) {
         return invoiceService.createInvoiceMember(data)
     }
-
-    paid(data) {
-        return invoiceService.paidInvoice(data)
-    }
 }
 
 export default new InvoiceModel();

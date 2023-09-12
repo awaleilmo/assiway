@@ -10,7 +10,7 @@
 <template>
     <div class="min-h-screen bg-pattrent bg-gray-900 max-w-full">
         <nav
-            class="bg-gradient-to-bl from-gray-900 to-gray-900/50 absolute md:fixed w-full z-30 top-0 left-0 border-gray-200 dark:bg-gray-900 shadow-lg">
+            class="bg-gradient-to-bl from-gray-900 to-gray-900/50 w-full z-30 top-0 left-0 border-gray-200 dark:bg-gray-900 shadow-lg">
             <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
                 <a href="/" class="flex items-center">
                     <img src="@/Assets/Asset4.png" class="h-8 mr-3" alt="Assiway Logo"/>
@@ -32,7 +32,7 @@
                         </NavLink>
                         <NavLink :active="route().current('HomeBook')" href="/book">Book</NavLink>
                         <template v-if="$page.props.auth.user">
-                            <NavLink :active="route().current('invoiceMember')"
+                            <NavLink v-if="$page.props.auth.user.isAdmin === 0" :active="route().current('invoiceMember')"
                                      href="/member/invoice">Invoice
                             </NavLink>
                             <NavLink :active="route().current('dashboardMember')"

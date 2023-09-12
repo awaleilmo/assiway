@@ -26,7 +26,9 @@ import {
     faCartShopping,
     faPaperPlane,
     faBan,
-    faClipboardCheck
+    faClipboardCheck,
+    faFileDownload,
+    faArrowRight
 } from '@fortawesome/free-solid-svg-icons'
 library.add(
     faCircleUser,
@@ -43,7 +45,9 @@ library.add(
     faCartShopping,
     faPaperPlane,
     faBan,
-    faClipboardCheck
+    faClipboardCheck,
+    faFileDownload,
+    faArrowRight
 )
 
 import { MotionPlugin } from '@vueuse/motion'

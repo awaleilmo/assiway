@@ -5,37 +5,97 @@ import gambar2 from "@/Assets/book/2.jpg";
 import gambar3 from "@/Assets/book/3.jpg";
 import gambar4 from "@/Assets/book/4.jpg";
 import gambar5 from "@/Assets/book/5.jpg";
-const items = ref([
-  {
-    id:1,
-    img: gambar1,
-  },
-  {
-    id:2,
-    img: gambar2,
-  },
-  {
-    id:3,
-    img: gambar3,
-  },
-  {
-    id:4,
-    img: gambar4,
-  },
-  {
-    id:5,
-    img: gambar5,
-  }
-])
+import {useForm, usePage} from "@inertiajs/vue3";
+import InvoiceModel from "@/Model/InvoiceModel.js";
+import {formatter} from "@/Configuration/sys.js";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import Login from "@/Pages/Auth/Login.vue";
+import Loading from "@/Components/Loading.vue";
+const props = defineProps({
+    items:{
+        type:Object
+    }
+})
+const loadings = ref(false)
+const show = ref(false)
+const showInvoice = ref(false)
+const alerts = ref({
+    color: 'bg-red-50 text-red-600',
+    status: false,
+    message: '',
+})
+const formInvoice = useForm({
+    user_id: usePage().props.auth.user ? usePage().props.auth.user.id : null,
+    book_id: null,
+    price: null,
+})
+const bayarSave = (data) => {
+    loadings.value = true
+    showInvoice.value = false
+    let isLogin = usePage().props.auth.user
+    setTimeout(async () => {
+        if (!isLogin) {
+            return location.href = '/login'
+        }
+        let dateOfBirth = isLogin.date
+        let placeOfBirth = isLogin.place
+        let gender = isLogin.gender
+        let address = isLogin.address
+        let phone = isLogin.phone
+        let typePhoto = isLogin.typePhoto
+        if (dateOfBirth === null || placeOfBirth === null || gender === null || address === null || phone === null || typePhoto === null) {
+            loadings.value = false
+            show.value = true
+            let text = 'Silakan isi semua data akun anda terlebih dahulu, sebelum melakukan pembelian <br />' +
+                `${dateOfBirth !== null ? '' : 'Tanggal Lahir, '}` +
+                `${placeOfBirth !== null ? '' : 'Tempat Lahir, '}` +
+                `${gender !== null ? '' : 'Jenis Kelamin, '}` +
+                `${address !== null ? '' : 'Alamat, '}` +
+                `${phone !== null ? '' : 'Nomor Telepon, '}` +
+                `${typePhoto !== null ? '' : 'Foto, '}`
+            return alerts.value = {
+                color: 'bg-red-50 text-red-600',
+                status: true,
+                message: text,
+            }
+        }
+        formInvoice.book_id = data.id
+        formInvoice.price = data.price
+        let saveData = await InvoiceModel.createInvoice(formInvoice)
+        if(saveData.success){
+            loadings.value = false
+            let data = saveData.data
+            let inv = "'"+data.contents.noInvoice.split('#')[1]+"'"
+            let text = `Hallo, Nama Saya ${usePage().props.auth.user.name} ` +
+                'saya ingin beli buku\n' +
+                ` -Nama Buku: ${formInvoice.title}\n` +
+                ` -Harga: Rp ${formatter.format(formInvoice.price)}\n` +
+                ` -no Invoice: ${inv}\n`
+            const whatsappMessage = window.encodeURIComponent(text);
+            const url = `https://api.whatsapp.com/send?phone=6285692699715&text=${whatsappMessage}`
+            formInvoice.reset()
+            return window.open(url)
+        }
+        loadings.value = false
+        return alerts.value = {
+            color: 'bg-red-50 text-red-600',
+            status: true,
+            message: saveData.data.message,
+        }
+
+    }, 2000)
+}
+
 </script>
 
 <template>
-  <div id="default-carousel" class="w-full" data-carousel="static">
+  <div id="default-carousel" class="w-full" data-carousel="static" v-if="items.length > 0">
     <!-- Carousel wrapper -->
     <div class="relative overflow-hidden rounded-lg h-full">
     <!--      item        -->
       <div v-for="(item, index) in items" :key="index" class="hidden duration-700 ease-in-out " data-carousel-item>
-        <img :src="item.img" class="block brightness-100 w-full h-full object-cover" alt="...">
+        <img :src="item.coverType+','+item.cover" class="block brightness-100 w-full h-full object-cover" alt="...">
         <div
             class="bg-gradient-to-tr from-black from-40% to-transparent w-full h-full absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2"/>
         <section
@@ -44,43 +104,32 @@ const items = ref([
             <h1 v-motion
                 :initial="{ opacity: 0, x: 100, duration: 1000 }"
                 :enter="{ opacity: 1, x: 0 }"
-                :visible="{ opacity: 1, x: 0 }"
                 :delay="500"
                 class="mb-4 text-4xl font-extrabold md:text-left text-center tracking-tight leading-none text-white md:text-5xl lg:text-6xl ">
-              Lorem ipsum dolor sit amet</h1>
+              {{ item.name }}</h1>
             <p v-motion
                :initial="{ opacity: 0, x: 100, duration: 1000 }"
                :enter="{ opacity: 1, x: 0 }"
-               :visible="{ opacity: 1, x: 0 }"
                :delay="600" class="mb-8 text-sm font-normal text-justify text-white lg:text-xl ">
-              Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
-              industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
-              scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into
-              electronic typesetting, remaining essentially unchanged.
+              {{ item.description }}
             </p>
             <div v-motion
                  :initial="{ opacity: 0, x: 100, duration: 1000 }"
                  :enter="{ opacity: 1, x: 0 }"
-                 :visible="{ opacity: 1, x: 0 }"
                  :delay="700" class="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
-              <a href="#"
-                 class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center hover:w-1/3 transition-all delay-100 ease-in-out text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 ">
+              <primary-button @click="bayarSave(item)"
+                 class="inline-flex justify-center items-center hover:scale-105 ">
                 Buy Now
-                <svg class="w-3.5 h-3.5 ml-2 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                     viewBox="0 0 14 10">
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M1 5h12m0 0L9 1m4 4L9 9"/>
-                </svg>
-              </a>
+                <font-awesome-icon class="ml-2" :icon="['fas', 'arrow-right']" />
+              </primary-button>
             </div>
           </div>
           <div class="md:w-full md:justify-end justify-center flex md:py-8 h-[30%] w-[70%] md:h-[80%]">
             <img v-motion
                  :initial="{ opacity: 0, y: 100, duration: 1000 }"
                  :enter="{ opacity: 1, y: 0 }"
-                 :visible="{ opacity: 1, y: 0 }"
                  :delay="500"
-                 :src="item.img"
+                 :src="item.coverType+','+item.cover"
                  class="block drop-shadow-lg rounded w-[80%] h-[calc(100%-1rem)] md:w-[80%] lg:w-auto" alt="...">
           </div>
         </section>
@@ -119,6 +168,8 @@ const items = ref([
         </span>
     </button>
   </div>
+
+    <Loading :loading="loadings"/>
 
 </template>
 

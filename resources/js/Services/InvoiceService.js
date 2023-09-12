@@ -25,10 +25,6 @@ class Invoice {
     createInvoiceMember(data) {
         return this.service('post', API_URL_MEMBER, data);
     }
-
-    paidInvoice(data) {
-        return this.service('post', API_URL_ADMIN+'/paid', data);
-    }
 }
 
 export default new Invoice();

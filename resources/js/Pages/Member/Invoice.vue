@@ -83,10 +83,10 @@ const btnSend = (data) => {
                                 <badge v-if="props.row.status === 1" color-props="indigo" font-width="base"
                                        border-props>Sudah Bayar</badge>
                                 <badge v-if="props.row.status === 2" color-props="green" font-width="base" border-props>Selesai</badge>
-                                <badge v-if="props.row.status === 3" color-props="Red" font-width="base" border-props>Di Tolak</badge>
+                                <badge v-if="props.row.status === 3" color-props="red" font-width="base" border-props>Di Tolak</badge>
                             </span>
                             <span v-if="props.column.field === 'action'">
-                                <primary-button @click="btnSend(props.row)">
+                                <primary-button v-if="props.row.status === 0" @click="btnSend(props.row)">
                                     <font-awesome-icon icon="fa-solid fa-paper-plane" class="mx-1"/>
                                     Kirim Pesan
                                 </primary-button>

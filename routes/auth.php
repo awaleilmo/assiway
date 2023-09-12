@@ -74,7 +74,6 @@ Route::middleware('auth')->group(function () {
 
             Route::get('/invoice', [InvoiceController::class, 'adminIndex'])->name('invoiceAdmin');
             Route::post('/invoice/status', [InvoiceController::class, 'updateStatus']);
-            Route::post('/invoice/paid', [InvoiceController::class, 'paid']);
         });
     });
 

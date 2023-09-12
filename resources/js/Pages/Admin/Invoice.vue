@@ -6,11 +6,11 @@ import {ref} from "vue";
 import {formatter} from "@/Configuration/sys.js";
 import Notification from "@/Components/Notification.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import WarningButton from "@/Components/WarningButton.vue";
 import DangerButton from "@/Components/DangerButton.vue";
 import AkuTable from "@/Components/AkuTable.vue";
-import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Badge from "@/Components/Badge.vue";
+import Loading from "@/Components/Loading.vue";
+import InvoiceModel from "@/Model/InvoiceModel.js";
 
 const props = defineProps({
     dataInvoice:{
@@ -37,16 +37,24 @@ const alerts = ref({
     status: false,
     message: '',
 })
-const sudahBayar = () =>{
+const sudahBayar = async (statusVal) => {
+    progressLoading.value = true
     let rawData = datatable.value.$refs.datatab.selectedRows
-    if (rawData.length === 0 ) {
+    if (rawData.length === 0) {
         alerts.value.status = true
         alerts.value.message = 'Please select at least one menu'
         alerts.value.color = 'bg-red-50 text-red-600 border border-red-400'
         return;
     }
-    let data = rawData[0]
-    console.log(data, 'sudah bayar')
+    let data = rawData
+    for (let i = 0; i < data.length; i++) {
+        let form = {
+            id: data[i].id,
+            status: statusVal
+        }
+        await InvoiceModel.setStatus(form)
+    }
+    location.reload()
 }
 
 </script>
@@ -64,11 +72,11 @@ const sudahBayar = () =>{
                     <Notification :alerts="alerts"/>
                     <!--  button  -->
                     <div class="px-3 py-4 flex justify-end">
-                        <primary-button class="mx-1 pl-3 pr-3" @click="sudahBayar">
+                        <primary-button class="mx-1 pl-3 pr-3" @click="sudahBayar(1)">
                             <font-awesome-icon icon="fa-solid fa-clipboard-check" class="mx-1"/>
                             Sudah Bayar
                         </primary-button>
-                        <danger-button class="mx-1 pl-3 pr-3" @click="displayFunction">
+                        <danger-button class="mx-1 pl-3 pr-3" @click="sudahBayar(3)">
                             <font-awesome-icon icon="fa-solid fa-ban" class="mx-1"/>
                             Tolak
                         </danger-button>
@@ -90,7 +98,7 @@ const sudahBayar = () =>{
                                 <badge v-if="props.row.status === 0" color-props="yellow" font-width="base" border-props>Belum Bayar</badge>
                                 <badge v-if="props.row.status === 1" color-props="indigo" font-width="base" border-props>Sudah Bayar</badge>
                                 <badge v-if="props.row.status === 2" color-props="green" font-width="base" border-props>Selesai</badge>
-                                <badge v-if="props.row.status === 3" color-props="Red" font-width="base" border-props>Di Tolak</badge>
+                                <badge v-if="props.row.status === 3" color-props="red" font-width="base" border-props>Di Tolak</badge>
                             </span>
                         </template>
                     </AkuTable>
@@ -98,6 +106,7 @@ const sudahBayar = () =>{
             </div>
         </div>
     </AdminLayout>
+    <loading :loading="progressLoading" />
 </template>
 
 <style scoped>

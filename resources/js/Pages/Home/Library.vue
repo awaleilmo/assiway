@@ -69,24 +69,6 @@ const buyButton = (value) => {
     loading.value = true
     let isLogin = usePage().props.auth.user
     setTimeout(() => {
-        if (!isLogin) {
-            return location.href = '/login'
-        }
-        let dateOfBirth = isLogin.date
-        let placeOfBirth = isLogin.place
-        let gender = isLogin.gender
-        let address = isLogin.address
-        let phone = isLogin.phone
-        let typePhoto = isLogin.typePhoto
-        if (dateOfBirth === null || placeOfBirth === null || gender === null || address === null || phone === null || typePhoto === null) {
-            loading.value = false
-            show.value = true
-            return alerts.value = {
-                color: 'bg-red-50 text-red-600',
-                status: true,
-                message: 'Silakan isi semua data akun anda terlebih dahulu, sebelum melakukan pembelian',
-            }
-        }
         showInvoice.value = true
         formInvoice.book_id = value.id
         formInvoice.price = value.price
@@ -117,10 +99,17 @@ const bayarSave = () => {
         if (dateOfBirth === null || placeOfBirth === null || gender === null || address === null || phone === null || typePhoto === null) {
             loading.value = false
             show.value = true
+            let text = 'Silakan isi semua data akun anda terlebih dahulu, sebelum melakukan pembelian <br />' +
+                `${dateOfBirth !== null ? '' : 'Tanggal Lahir, '}` +
+                `${placeOfBirth !== null ? '' : 'Tempat Lahir, '}` +
+                `${gender !== null ? '' : 'Jenis Kelamin, '}` +
+                `${address !== null ? '' : 'Alamat, '}` +
+                `${phone !== null ? '' : 'Nomor Telepon, '}` +
+                `${typePhoto !== null ? '' : 'Foto, '}`
             return alerts.value = {
                 color: 'bg-red-50 text-red-600',
                 status: true,
-                message: 'Silakan isi semua data akun anda terlebih dahulu, sebelum melakukan pembelian',
+                message: text,
             }
         }
         let saveData = await InvoiceModel.createInvoice(formInvoice)
@@ -172,8 +161,6 @@ onMounted(() => {
     <UserLayout :loading="loading">
         <div class="p-4">
             <div class="p-4 rounded-lg mt-14">
-                <!-- notification -->
-                <Notification :alerts="alerts"/>
 
                 <div class="max-w-[100%] flex flex-wrap justify-center"
                      :class="{'h-[60vh]': dataBooks.data.length === 0}"
@@ -187,12 +174,14 @@ onMounted(() => {
                             {{ item.name }}
                         </template>
                         <template #description>
+                            <p class="whitespace-pre-line line-clamp-2 overflow-hidden truncate text-ellipsis">
                             {{ item.description }}
+                            </p>
                         </template>
                         <template #button>
                             <primary-button class="inline-flex items-center" @click="buyButton(item)">
-                                Beli
-                                <font-awesome-icon :icon="['fas', 'shopping-cart']" class="w-4 h-4 ml-2"/>
+                                Lihat Detail
+                                <font-awesome-icon :icon="['fas', 'arrow-right']" class="w-4 h-4 ml-2"/>
                             </primary-button>
                         </template>
                     </card-with-image>
@@ -203,21 +192,7 @@ onMounted(() => {
             <Pagination :links="dataBooks.links" :params="selected" :url="dataBooks.path"/>
         </div>
     </UserLayout>
-    <Modal :show="show" @close="show=false">
-        <div
-            :class="'p-4 text-sm rounded-lg flex items-center '+alerts.color"
-        >
-                        <span class="font-medium">
-                        {{ alerts.message }}
-                        </span>
-            <button @click="show=false" type="button"
-                    class=" text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center">
-                <font-awesome-icon icon="fa-solid fa-close"/>
-                <span class="sr-only">Close modal</span>
-            </button>
-        </div>
-    </Modal>
-    <Modal v-if="usePage().props.auth.user" max-width="lg" :show="showInvoice" @close="showInvoice=false">
+    <Modal max-width="lg" :show="showInvoice" @close="showInvoice=false">
         <div class="relative">
             <!-- Modal content -->
             <div class="relative bg-white rounded-lg shadow">
@@ -266,11 +241,26 @@ onMounted(() => {
                 <!-- Modal footer -->
                 <div v-if="!formInvoice.processing"
                      class="px-4 py-2 flex justify-end border-t rounded-b bg-gray-100 ">
-                    <success-button type="button" @click="bayarSave">
-                        Bayar Sekarang
+                    <success-button class="inline-flex items-center" type="button" @click="bayarSave">
+                        Beli Sekarang
+                        <font-awesome-icon :icon="['fas', 'shopping-cart']" class="w-4 h-4 ml-2"/>
                     </success-button>
                 </div>
             </div>
+        </div>
+    </Modal>
+
+    <Modal :show="show" @close="show=false">
+        <div
+            :class="'p-4 text-sm rounded-lg flex items-center '+alerts.color"
+        >
+                        <span class="font-medium" v-html="alerts.message">
+                        </span>
+            <button @click="show=false" type="button"
+                    class=" text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center">
+                <font-awesome-icon icon="fa-solid fa-close"/>
+                <span class="sr-only">Close modal</span>
+            </button>
         </div>
     </Modal>
 </template>

@@ -117,7 +117,7 @@ class InvoiceController extends Controller
             }
             $form = Invoice::query()->find($request->get('id'));
             $form->setAttribute('status', $request->get('status'));
-            if($request->get('status') == 2) {
+            if($request->get('status') == 1) {
                 try {
                     $fromNew = new Library();
                     $fromNew->setAttribute('user_id', $form->getAttribute('user_id'));
@@ -142,42 +142,6 @@ class InvoiceController extends Controller
                 'status' => false,
                 'color' => 'bg-red-50 text-red-600 border border-red-400',
                 'message' => $th->getMessage(),
-            ]);
-        }
-    }
-
-    public function paid(Request $request): JsonResponse
-    {
-        try{
-            $validate = Validator::make($request->all(), [
-                'id' => 'required',
-            ]);
-            if ($validate->fails()) {
-                return response()->json([
-                    'status' => false,
-                    'color' => 'bg-red-50 text-red-600 border border-red-400',
-                    'message' => $validate->errors()->first(),
-                ]);
-            }
-            $form = Invoice::query()->find($request->get('id'));
-            $form->setAttribute('status', 1);
-            $form->save();
-            $library = new Library();
-            $library->setAttribute('user_id', $form->getAttribute('user_id'));
-            $library->setAttribute('book_id', $form->getAttribute('book_id'));
-            $library->save();
-            return response()->json([
-                'status' => true,
-                'color' => 'bg-green-100 text-green-600 border border-green-400',
-                'message' => 'data has been saved',
-                'contents' => $form
-            ]);
-        } catch (Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'color' => 'bg-red-50 text-red-600 border border-red-400',
-                'message' => $th->getMessage(),
-                'contents' => []
             ]);
         }
     }
