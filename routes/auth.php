@@ -61,6 +61,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
                 ->name('logout');
+    Route::post('book/checkIsMyBook', [BookController::class, 'checkIsMyBook']);
     Route::middleware(['verified', 'role:1'])->group(function () {
         Route::prefix('admin')->group( function () {
             Route::get('/dashboard', function () {
@@ -73,9 +74,10 @@ Route::middleware('auth')->group(function () {
             Route::post('/book/status', [BookController::class, 'updateStatus']);
 
             Route::get('/invoice', [InvoiceController::class, 'adminIndex'])->name('invoiceAdmin');
-            Route::post('/invoice/status', [InvoiceController::class, 'updateStatus']);
         });
     });
+
+    Route::post('/invoice/status', [InvoiceController::class, 'updateStatus']);
 
     Route::middleware(['verified', 'role:0'])->group(function () {
         Route::prefix('member')->group( function () {

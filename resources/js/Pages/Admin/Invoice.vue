@@ -28,10 +28,6 @@ const columns = [
 ]
 const datatable = ref(null)
 const progressLoading = ref(false)
-const popForm = useForm({
-    status: false,
-    title: ''
-})
 const alerts = ref({
     color: 'bg-red-50 text-red-600',
     status: false,

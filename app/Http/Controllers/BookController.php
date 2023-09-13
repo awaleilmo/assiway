@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Invoice;
+use App\Models\Library;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -155,5 +158,16 @@ class BookController extends Controller
                 'message' => $th->getMessage(),
             ]);
         }
+    }
+
+    public function checkIsMyBook(Request $request): jsonResponse
+    {
+        $check = Library::query()->where('user_id', $request->get('user_id'))->where('book_id', $request->get('book_id'))->first();
+        $invoice = Invoice::query()->where('user_id', $request->get('user_id'))->where('book_id', $request->get('book_id'))->first();
+        return response()->json([
+            'status' => $check !== null,
+            'library' => $check,
+            'invoice' => $invoice
+        ]);
     }
 }

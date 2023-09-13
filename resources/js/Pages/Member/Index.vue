@@ -7,6 +7,8 @@ import CardWithImage from "@/Components/CardWithImage.vue";
 import Loading from "@/Components/Loading.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import InvoiceModel from "@/Model/InvoiceModel.js";
+import BookModel from "@/Model/BookModel.js";
 
 const props = defineProps({
     dataBooks: Object
@@ -25,23 +27,23 @@ const columns = [
     {label: 'Price', field: 'price', search: true, sortable: true, width: '100px'},
     {label: 'File', field: 'file', search: true, sortable: true, width: '100px'},
 ]
-const datatable = ref(null)
 const progressLoading = ref(false)
-const popForm = useForm({
-    status: false,
-    title: ''
-})
-const alerts = ref({
-    color: 'bg-red-50 text-red-600',
-    status: false,
-    message: '',
-})
 onBeforeMount(() => {
     progressLoading.value = true
 })
-const downloadFile = (item) => {
+const downloadFile = async (item) => {
     progressLoading.value = true
-    setTimeout(() => {
+    let dta = {
+        user_id: usePage().props.auth.user.id,
+        book_id: item.id
+    }
+    let checkMyBook = await BookModel.checkIsMyBook(dta)
+    setTimeout(async () => {
+        let form = {
+            id: checkMyBook.data.invoice.id,
+            status: 2
+        }
+        await InvoiceModel.setStatus(form)
         progressLoading.value = false
         let link = document.createElement('a');
         link.href = '../storage/book/' + item.file;

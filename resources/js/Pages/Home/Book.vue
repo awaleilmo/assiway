@@ -12,6 +12,8 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import Login from "@/Pages/Auth/Login.vue";
 import Loading from "@/Components/Loading.vue";
+import bookModel from "@/Model/BookModel.js";
+import Modal from "@/Components/Modal.vue";
 const props = defineProps({
     items:{
         type:Object
@@ -37,6 +39,20 @@ const bayarSave = (data) => {
     setTimeout(async () => {
         if (!isLogin) {
             return location.href = '/login'
+        }
+        let form = {
+            user_id: isLogin.id,
+            book_id: data.id
+        }
+        let checkIsMyBook = await bookModel.checkIsMyBook(form)
+        if(checkIsMyBook.data.status){
+            loadings.value = false
+            return alerts.value = {
+                color: 'bg-red-50 text-red-600 border border-red-400',
+                status: true,
+                message: 'Anda sudah membeli buku ini',
+            }
+
         }
         let dateOfBirth = isLogin.date
         let placeOfBirth = isLogin.place
@@ -130,7 +146,7 @@ const bayarSave = (data) => {
                  :enter="{ opacity: 1, y: 0 }"
                  :delay="500"
                  :src="item.coverType+','+item.cover"
-                 class="block drop-shadow-lg rounded w-[80%] h-[calc(100%-1rem)] md:w-[80%] lg:w-auto" alt="...">
+                 class="block drop-shadow-lg rounded-lg shadow-2xl border-2 border-gray-200 w-[80%] h-[calc(100%-1rem)] md:w-[80%] lg:w-auto" alt="...">
           </div>
         </section>
       </div>
@@ -168,6 +184,20 @@ const bayarSave = (data) => {
         </span>
     </button>
   </div>
+
+    <Modal :show="alerts.status" @close="alerts.status=false">
+        <div
+            :class="'p-4 text-sm rounded-lg flex items-center '+alerts.color"
+        >
+                        <span class="font-medium" v-html="alerts.message">
+                        </span>
+            <button @click="alerts.status=false" type="button"
+                    class=" text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center">
+                <font-awesome-icon icon="fa-solid fa-close"/>
+                <span class="sr-only">Close modal</span>
+            </button>
+        </div>
+    </Modal>
 
     <Loading :loading="loadings"/>
 

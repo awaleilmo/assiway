@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const API_URL = '/admin/book';
-
+const API_URL_ADMIN = '/admin/book';
+const API_URL = '/book';
 class Book {
     service(method, url, data) {
         return axios({
@@ -18,10 +18,14 @@ class Book {
     }
 
     updateDisplay(data) {
-        return this.service('post', API_URL+'/display', data);
+        return this.service('post', API_URL_ADMIN+'/display', data);
     }
     updateStatus(data) {
-        return this.service('post', API_URL+'/status', data);
+        return this.service('post', API_URL_ADMIN+'/status', data);
+    }
+
+    checkIsMyBook(data) {
+        return this.service('post', API_URL+'/checkIsMyBook', data);
     }
 }
 

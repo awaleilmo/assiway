@@ -75,7 +75,6 @@ onMounted(() => {
                             <h1 v-motion
                                 :initial="{ opacity: 0, y: -100, duration: 1000 }"
                                 :enter="{ opacity: 1, y: 0 }"
-                                :visible="{ opacity: 1, y: 0 }"
                                 :delay="500"
                                 class="mb-4 text-3xl font-extrabold tracking-tight leading-none text-white md:text-4xl lg:text-6xl ">
                                 UBAYDILLAH</h1>
@@ -90,7 +89,6 @@ onMounted(() => {
                                 <p v-motion
                                    :initial="{ opacity: 0, y: -100, duration: 1000 }"
                                    :enter="{ opacity: 1, y: 0 }"
-                                   :visible="{ opacity: 1, y: 0 }"
                                    :delay="600"
                                    class="mb-8 text-lg text-justify font-normal text-gray-500 lg:text-xl ">
                                     Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
@@ -110,7 +108,6 @@ onMounted(() => {
                         <img v-motion
                              :initial="{ opacity: 0, x: -100, duration: 1000 }"
                              :enter="{ opacity: 1, x: 0 , scale: 1 }"
-                             :visible="{ opacity: 1, x: 0 , scale: 1}"
                              :variants="{ custom: { scale: 2 } }"
                              :hovered="{ scale: 1.2 }"
                              :delay="200"

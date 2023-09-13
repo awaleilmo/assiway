@@ -14,6 +14,7 @@ import ProgressBar from "@/Components/ProgressBar.vue";
 import {formatter} from "@/Configuration/sys.js";
 import SuccessButton from "@/Components/SuccessButton.vue";
 import InvoiceModel from "@/Model/InvoiceModel.js"
+import bookModel from "@/Model/BookModel.js";
 
 const loading = ref(true);
 
@@ -56,6 +57,7 @@ const selected = ref(
 const formInvoice = useForm({
     user_id: usePage().props.auth.user ? usePage().props.auth.user.id : null,
     book_id: null,
+    author: null,
     price: null,
     status: null,
     coverType: null,
@@ -64,14 +66,25 @@ const formInvoice = useForm({
     title: null,
     year: null,
     publisher: null,
+    fileData: null,
 })
-const buyButton = (value) => {
+const myBooks = ref(false)
+const buyButton = async (value) => {
     loading.value = true
     let isLogin = usePage().props.auth.user
+    if(isLogin){
+        let form = {
+            user_id: isLogin.id,
+            book_id: value.id
+        }
+        let checkIsMyBook = await bookModel.checkIsMyBook(form)
+        myBooks.value = checkIsMyBook.data.status
+    }
     setTimeout(() => {
         showInvoice.value = true
         formInvoice.book_id = value.id
         formInvoice.price = value.price
+        formInvoice.author = value.author
         formInvoice.status = 0
         formInvoice.coverType = value.coverType
         formInvoice.cover = value.cover
@@ -79,7 +92,30 @@ const buyButton = (value) => {
         formInvoice.title = value.name
         formInvoice.year = value.years
         formInvoice.publisher = value.publisher
+        formInvoice.fileData = value.file
         loading.value = false
+    }, 3000)
+}
+const downloadFile = async(item) => {
+    showInvoice.value = false
+    loading.value = true
+    let dta = {
+        user_id: usePage().props.auth.user.id,
+        book_id: item.book_id
+    }
+    let checkMyBook = await bookModel.checkIsMyBook(dta)
+    setTimeout(async () => {
+        let form = {
+            id: checkMyBook.data.invoice.id,
+            status: 2
+        }
+        await InvoiceModel.setStatus(form)
+        loading.value = false
+        let link = document.createElement('a');
+        link.href = '../storage/book/' + item.fileData;
+        link.download = item.title;
+        link.click();
+        link.remove();
     }, 3000)
 }
 const bayarSave = () => {
@@ -158,40 +194,6 @@ onMounted(() => {
 </script>
 
 <template>
-    <UserLayout :loading="loading">
-        <div class="p-4">
-            <div class="p-4 rounded-lg mt-14">
-
-                <div class="max-w-[100%] flex flex-wrap justify-center"
-                     :class="{'h-[60vh]': dataBooks.data.length === 0}"
-                >
-                    <card-with-image v-for="(item, index) in dataBooks.data" :key="index">
-                        <template #image>
-                            <img :src="item.coverType +','+ item.cover"
-                                 class="rounded-t-lg object-contain object-top h-96 w-full" alt="image"/>
-                        </template>
-                        <template #header>
-                            {{ item.name }}
-                        </template>
-                        <template #description>
-                            <p class="whitespace-pre-line line-clamp-2 overflow-hidden truncate text-ellipsis">
-                            {{ item.description }}
-                            </p>
-                        </template>
-                        <template #button>
-                            <primary-button class="inline-flex items-center" @click="buyButton(item)">
-                                Lihat Detail
-                                <font-awesome-icon :icon="['fas', 'arrow-right']" class="w-4 h-4 ml-2"/>
-                            </primary-button>
-                        </template>
-                    </card-with-image>
-                </div>
-            </div>
-        </div>
-        <div class="w-full bg-gray-900 py-4 rounded-t-2xl">
-            <Pagination :links="dataBooks.links" :params="selected" :url="dataBooks.path"/>
-        </div>
-    </UserLayout>
     <Modal max-width="lg" :show="showInvoice" @close="showInvoice=false">
         <div class="relative">
             <!-- Modal content -->
@@ -215,8 +217,8 @@ onMounted(() => {
                     </h2>
                     <div>
                         <img :src="formInvoice.coverType +','+ formInvoice.cover"
-                             class=" object-cover h-[80vh] w-full" alt="image"/>
-                        <p class="text-gray-700 font-medium italic">
+                             class=" object-cover h-[80vh] rounded-lg w-full" alt="image"/>
+                        <p class="text-gray-700 text-sm font-medium italic">
                             Publisher: {{ formInvoice.publisher }}, Year: {{ formInvoice.year }}
                         </p>
                     </div>
@@ -226,6 +228,9 @@ onMounted(() => {
                         </h3>
                         <p class="p-3 rounded text-gray-700 font-medium  bg-gray-200">
                             {{ formInvoice.description }}
+                        </p>
+                        <p class="text-gray-700 text-xs mt-2 font-medium italic">
+                            Penulis: {{ formInvoice.author }}
                         </p>
                         <p class="pt-6 px-3 rounded text-gray-700 font-medium sm:text-2xl">
                             Price : Rp {{ formatter.format(formInvoice.price) }}
@@ -241,7 +246,11 @@ onMounted(() => {
                 <!-- Modal footer -->
                 <div v-if="!formInvoice.processing"
                      class="px-4 py-2 flex justify-end border-t rounded-b bg-gray-100 ">
-                    <success-button class="inline-flex items-center" type="button" @click="bayarSave">
+                    <primary-button v-if="myBooks" class="inline-flex items-center" @click="downloadFile(formInvoice)">
+                        Download file
+                        <font-awesome-icon :icon="['fas', 'file-download']" class="w-4 h-4 ml-2"/>
+                    </primary-button>
+                    <success-button v-else class="inline-flex items-center" type="button" @click="bayarSave">
                         Beli Sekarang
                         <font-awesome-icon :icon="['fas', 'shopping-cart']" class="w-4 h-4 ml-2"/>
                     </success-button>
@@ -263,6 +272,41 @@ onMounted(() => {
             </button>
         </div>
     </Modal>
+
+    <UserLayout :loading="loading">
+        <div class="p-4">
+            <div class="p-4 rounded-lg mt-14">
+
+                <div class="max-w-[100%] flex flex-wrap justify-center"
+                     :class="{'h-[60vh]': dataBooks.data.length === 0}"
+                >
+                    <card-with-image v-for="(item, index) in dataBooks.data" :key="index">
+                        <template #image>
+                            <img :src="item.coverType +','+ item.cover"
+                                 class="rounded-t-lg object-contain object-top h-96 w-full" alt="image"/>
+                        </template>
+                        <template #header>
+                            {{ item.name }}
+                        </template>
+                        <template #description>
+                            <p class="whitespace-pre-line line-clamp-2 overflow-hidden truncate text-ellipsis">
+                                {{ item.description }}
+                            </p>
+                        </template>
+                        <template #button>
+                            <primary-button class="inline-flex items-center hover:scale-110" @click="buyButton(item)">
+                                Lihat Detail
+                                <font-awesome-icon :icon="['fas', 'arrow-right']" class="w-4 h-4 ml-2"/>
+                            </primary-button>
+                        </template>
+                    </card-with-image>
+                </div>
+            </div>
+        </div>
+        <div class="w-full bg-gray-900 py-4 rounded-t-2xl">
+            <Pagination :links="dataBooks.links" :params="selected" :url="dataBooks.path"/>
+        </div>
+    </UserLayout>
 </template>
 
 <style scoped>
