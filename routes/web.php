@@ -20,9 +20,7 @@ use Inertia\Inertia;
 
 Route::get('/', [BaseController::class, 'HomeIndex'])->name('Home');
 
-Route::get('/profiles', function () {
-    return Inertia::render('Home/Profile');
-})->name("Profiles");
+Route::get('/profiles', [ProfileController::class, 'homeProfile'])->name("Profiles");
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

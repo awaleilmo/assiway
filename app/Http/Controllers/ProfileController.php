@@ -108,4 +108,9 @@ class ProfileController extends Controller
             ]);
         }
     }
+
+    public function homeProfile(Request $request): Response
+    {
+        return Inertia::render('Home/Profile');
+    }
 }

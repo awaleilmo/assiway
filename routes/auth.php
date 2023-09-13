@@ -63,6 +63,7 @@ Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
                 ->name('logout');
     Route::post('book/checkIsMyBook', [BookController::class, 'checkIsMyBook']);
+
     Route::middleware(['verified', 'role:1'])->group(function () {
         Route::prefix('admin')->group( function () {
             Route::get('/dashboard', function () {
