@@ -478,8 +478,6 @@ const notification = computed(() => {
         </div>
     </Modal>
 
-
-
     <Loading :loading="progressLoading"/>
 </template>
 

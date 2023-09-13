@@ -12,6 +12,7 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\Controller as BaseController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -67,6 +68,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/dashboard', function () {
                 return Inertia::render('Admin/Index');
             })->name('dashboardAdmin');
+            Route::get('user', [UserController::class, 'adminIndex'])->name('userAdmin');
 
             Route::get('/book', [BookController::class, 'AdminIndex'])->name('bookAdmin');
             Route::post('/book', [BookController::class, 'createOrEdit']);
