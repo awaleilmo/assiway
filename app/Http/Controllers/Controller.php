@@ -11,6 +11,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response as inertiaResponse;
+use phpDocumentor\Reflection\Types\Object_;
 
 class Controller extends BaseController
 {
@@ -37,7 +38,9 @@ class Controller extends BaseController
 
     public function homeIndex(Request $request): inertiaResponse
     {
-        $myBook = Book::query()->where('display',1)->get();
+        $traffic = new TrafficController();
+        $traffic->addTrafficPage('home');
+        $myBook = Book::query()->where('display', 1)->get();
         return Inertia::render('Home/Index', [
             'dataBooks' => $myBook
         ]);

@@ -15,6 +15,7 @@ import {formatter} from "@/Configuration/sys.js";
 import SuccessButton from "@/Components/SuccessButton.vue";
 import InvoiceModel from "@/Model/InvoiceModel.js"
 import bookModel from "@/Model/BookModel.js";
+import TrafficModel from "@/Model/TrafficModel.js";
 
 const loading = ref(true);
 
@@ -80,6 +81,7 @@ const buyButton = async (value) => {
         let checkIsMyBook = await bookModel.checkIsMyBook(form)
         myBooks.value = checkIsMyBook.data.status
     }
+    await TrafficModel.trafficBook(value.id)
     setTimeout(() => {
         showInvoice.value = true
         formInvoice.book_id = value.id

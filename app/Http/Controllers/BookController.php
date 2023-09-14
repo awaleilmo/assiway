@@ -37,6 +37,8 @@ class BookController extends Controller
         $perPage = $request->get('perPage') ?: 10;
         $search = $request->get('search') ?: '';
         $column = $request->get('column') ?: 'name';
+        $traffic = new TrafficController();
+        $traffic->addTrafficPage('book');
         $book = Book::query()
             ->whereRaw("UPPER(" . $column . ") LIKE '%" . strtoupper($search) . "%'")
             ->orderBy('name', 'asc')

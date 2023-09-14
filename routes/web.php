@@ -3,6 +3,7 @@
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\Controller as BaseController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TrafficController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -21,6 +22,8 @@ use Inertia\Inertia;
 Route::get('/', [BaseController::class, 'HomeIndex'])->name('Home');
 
 Route::get('/profiles', [ProfileController::class, 'homeProfile'])->name("Profiles");
+
+Route::get('/traffic/book/{book}', [TrafficController::class, 'addTrafficBook']);
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

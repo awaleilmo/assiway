@@ -111,6 +111,8 @@ class ProfileController extends Controller
 
     public function homeProfile(Request $request): Response
     {
+        $traffic = new TrafficController();
+        $traffic->addTrafficPage('profile');
         return Inertia::render('Home/Profile');
     }
 }
