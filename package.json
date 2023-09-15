@@ -24,6 +24,7 @@
         "@fortawesome/vue-fontawesome": "^3.0.3",
         "@vueuse/motion": "^2.0.0",
         "flowbite": "^1.8.1",
+        "highcharts-vue": "^1.4.3",
         "vue-advanced-cropper": "^2.8.8",
         "vue-good-table-next": "^0.2.1"
     }

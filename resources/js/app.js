@@ -11,6 +11,7 @@ import { Cropper } from 'vue-advanced-cropper'
 import 'vue-advanced-cropper/dist/style.css';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import HighchartsVue from 'highcharts-vue'
 import {
     faCircleUser,
     faBook,
@@ -61,6 +62,7 @@ createInertiaApp({
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(MotionPlugin)
+            .use(HighchartsVue, {tagName: 'charts'})
             .component('font-awesome-icon', FontAwesomeIcon)
             .component('cropper', Cropper)
             .use(ZiggyVue, Ziggy)

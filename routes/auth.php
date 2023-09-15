@@ -12,6 +12,7 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\Controller as BaseController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\TrafficController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -81,6 +82,8 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::post('/invoice/status', [InvoiceController::class, 'updateStatus']);
+
+    Route::get('/statistic', [TrafficController::class, 'statistics'])->name('statistic');
 
     Route::middleware(['verified', 'role:0'])->group(function () {
         Route::prefix('member')->group( function () {
