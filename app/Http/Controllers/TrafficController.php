@@ -66,7 +66,7 @@ class TrafficController extends Controller
             ->whereNotIn('invoices.status', [0, 3])
             ->selectRaw('count(invoices.book_id) as data, books.name as name')
             ->groupBy('invoices.book_id','books.name')->get();
-        $graphPengunjung = Traffic::query()->where('page', '!=',null)->selectRaw('sum(view) as total')->first();
+        $graphPengunjung = Traffic::query()->where('page', '!=',null)->selectRaw('convert (sum(view), SIGNED ) as total')->first();
         return response()->json([
             'status' => true,
             'graphPenjualan' => $graphPenjualan,

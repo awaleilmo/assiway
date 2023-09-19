@@ -101,7 +101,7 @@ class InvoiceController extends Controller
         }
     }
 
-    public function updateStatus(Request $request): RedirectResponse
+    public function updateStatus(Request $request): JsonResponse
     {
         try{
             $validate = Validator::make($request->all(), [
@@ -109,14 +109,26 @@ class InvoiceController extends Controller
                 'status' => 'required',
             ]);
             if ($validate->fails()) {
-                return Redirect::back()->with('response', [
+                return response()->json([
                     'status' => false,
                     'color' => 'bg-red-50 text-red-600 border border-red-400',
                     'message' => $validate->errors()->first(),
                 ]);
             }
+
             $form = Invoice::query()->find($request->get('id'));
             $form->setAttribute('status', $request->get('status'));
+            $checkLibrary = Library::query()
+                ->where('book_id', $form->getAttribute('book_id'))
+                ->where('user_id', $form->getAttribute('user_id'))
+                ->first();
+            if($checkLibrary){
+                return response()->json([
+                    'status' => false,
+                    'color' => 'bg-red-50 text-red-600 border border-red-400',
+                    'message' => 'Data ini sudah dibayarkan',
+                ]);
+            }
             if($request->get('status') == 1) {
                 try {
                     $fromNew = new Library();
@@ -124,7 +136,7 @@ class InvoiceController extends Controller
                     $fromNew->setAttribute('book_id', $form->getAttribute('book_id'));
                     $fromNew->save();
                 } catch (Throwable $th) {
-                    return Redirect::back()->with('response', [
+                    return response()->json([
                         'status' => false,
                         'color' => 'bg-red-50 text-red-600 border border-red-400',
                         'message' => $th->getMessage(),
@@ -132,13 +144,13 @@ class InvoiceController extends Controller
                 }
             }
             $form->save();
-            return Redirect::back()->with('response', [
+            return response()->json([
                 'status' => true,
                 'color' => 'bg-green-100 text-green-600 border border-green-400',
                 'message' => 'Data has been saved',
             ]);
         } catch (Throwable $th) {
-            return Redirect::back()->with('response', [
+            return response()->json([
                 'status' => false,
                 'color' => 'bg-red-50 text-red-600 border border-red-400',
                 'message' => $th->getMessage(),

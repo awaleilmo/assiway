@@ -2,7 +2,7 @@
 
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import {useForm, usePage} from "@inertiajs/vue3";
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import {formatter} from "@/Configuration/sys.js";
 import Notification from "@/Components/Notification.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
@@ -37,6 +37,7 @@ const sudahBayar = async (statusVal) => {
     progressLoading.value = true
     let rawData = datatable.value.$refs.datatab.selectedRows
     if (rawData.length === 0) {
+        progressLoading.value = false
         alerts.value.status = true
         alerts.value.message = 'Please select at least one menu'
         alerts.value.color = 'bg-red-50 text-red-600 border border-red-400'
@@ -48,10 +49,34 @@ const sudahBayar = async (statusVal) => {
             id: data[i].id,
             status: statusVal
         }
-        await InvoiceModel.setStatus(form)
+        let save = await InvoiceModel.setStatus(form)
+        if(save.data.status === false){
+            alerts.value.status = true
+            alerts.value.message = save.data.message
+            alerts.value.color = save.data.color
+            progressLoading.value = false
+            return;
+        }
+        if(i === data.length - 1){
+            progressLoading.value = false
+            location.reload()
+        }
     }
-    location.reload()
 }
+
+const notification = computed(() => {
+    const data = usePage().props.flash.response
+    console.log(data)
+    let result;
+    if (data) {
+        result = {
+            status: true,
+            message: data.message,
+            color: data.color
+        }
+    }
+    return result;
+})
 
 </script>
 
@@ -65,7 +90,7 @@ const sudahBayar = async (statusVal) => {
             <div class="p-4 border-2 bg-gray-100 border-gray-200 border-dashed rounded-lg  mt-14">
                 <div class="max-w-[100%] mx-auto sm:px-6 lg:px-8">
                     <!-- notification -->
-                    <Notification :alerts="alerts"/>
+                    <Notification :alerts="alerts || notification"/>
                     <!--  button  -->
                     <div class="px-3 py-4 flex justify-end">
                         <primary-button class="mx-1 pl-3 pr-3" @click="sudahBayar(1)">

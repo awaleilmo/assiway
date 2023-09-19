@@ -106,9 +106,9 @@ const bayarSave = (data) => {
 </script>
 
 <template>
-  <div id="default-carousel" class="w-full" data-carousel="static" v-if="items.length > 0">
+  <div id="default-carousel" class="w-full min-h-[110vh] sm:min-h-screen" data-carousel="static" v-if="items.length > 0">
     <!-- Carousel wrapper -->
-    <div class="relative overflow-hidden rounded-lg h-full">
+    <div class="relative overflow-hidden rounded-lg h-full min-h-fit">
     <!--      item        -->
       <div v-for="(item, index) in items" :key="index" class="hidden duration-700 ease-in-out " data-carousel-item>
         <img :src="item.coverType+','+item.cover" class="block brightness-100 w-full h-full object-cover" alt="...">
@@ -140,13 +140,13 @@ const bayarSave = (data) => {
               </primary-button>
             </div>
           </div>
-          <div class="md:w-full md:justify-end justify-center flex md:py-8 h-[30%] w-[70%] md:h-[80%]">
+          <div class="md:w-full md:justify-end justify-center flex md:py-8 h-auto w-[70%] md:h-[80%]">
             <img v-motion
                  :initial="{ opacity: 0, y: 100, duration: 1000 }"
                  :enter="{ opacity: 1, y: 0 }"
                  :delay="500"
                  :src="item.coverType+','+item.cover"
-                 class="block drop-shadow-lg rounded-lg shadow-2xl border-2 border-gray-200 w-[80%] h-[calc(100%-1rem)] md:w-[80%] lg:w-auto" alt="...">
+                 class="block drop-shadow-lg rounded-lg shadow-2xl border-2 border-gray-200 w-[80%] h-full md:w-[80%] lg:w-auto" alt="...">
           </div>
         </section>
       </div>

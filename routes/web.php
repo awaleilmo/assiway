@@ -25,6 +25,8 @@ Route::get('/profiles', [ProfileController::class, 'homeProfile'])->name("Profil
 
 Route::get('/traffic/book/{book}', [TrafficController::class, 'addTrafficBook']);
 
+Route::get('/traffic/statistics', [TrafficController::class, 'statistics'])->name('statistic');
+
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

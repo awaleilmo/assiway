@@ -19,6 +19,9 @@ class Traffic {
     trafficBook(book) {
         return this.service('get', API_URL+'/book/' + book);
     }
+    statistics() {
+        return this.service('get', API_URL+'/statistics');
+    }
 }
 
 export default new Traffic();
