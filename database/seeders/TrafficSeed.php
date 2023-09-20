@@ -16,12 +16,15 @@ class TrafficSeed extends Seeder
         Traffic::query()->insert([
             [
                 'page' => 'home',
+                'book_id' => null
             ],
             [
-                'page' => 'profile'
+                'page' => 'profile',
+                'book_id' => null
             ],
             [
-                'page' => 'book'
+                'page' => 'book',
+                'book_id' => null
             ]
         ]);
     }

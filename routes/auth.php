@@ -77,6 +77,9 @@ Route::middleware('auth')->group(function () {
             Route::post('/book/status', [BookController::class, 'updateStatus']);
 
             Route::get('/invoice', [InvoiceController::class, 'adminIndex'])->name('invoiceAdmin');
+            Route::get('/dashboard/home', function () {
+                return Inertia::render('Admin/home/HomeDashboard');
+            });
         });
     });
 

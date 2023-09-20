@@ -11,7 +11,7 @@
            :visible="{ opacity: 1, x: 0 }"
            :delay="600" src="../../assets/work1.webp" class="object-cover" width="1733" height="1155" alt="">
     </div>
-    <div class="text-center flex items-center">
+    <div class="flex items-center">
       <div class="py-8 px-4 w-full mx-auto max-w-screen-xl lg:py-16">
         <h1 v-motion
             :initial="{ opacity: 0, y: -100, duration: 1000 }"
