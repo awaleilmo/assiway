@@ -29,7 +29,14 @@ import {
     faBan,
     faClipboardCheck,
     faFileDownload,
-    faArrowRight
+    faArrowRight,
+    faBars,
+    faXmark,
+    faHouse,
+    faUsers,
+    faList,
+    faRightToBracket,
+    faIdCard
 } from '@fortawesome/free-solid-svg-icons'
 library.add(
     faCircleUser,
@@ -48,7 +55,14 @@ library.add(
     faBan,
     faClipboardCheck,
     faFileDownload,
-    faArrowRight
+    faArrowRight,
+    faBars,
+    faXmark,
+    faHouse,
+    faUsers,
+    faList,
+    faRightToBracket,
+    faIdCard
 )
 
 import { MotionPlugin } from '@vueuse/motion'
