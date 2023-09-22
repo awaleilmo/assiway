@@ -3,13 +3,11 @@
 
 <template>
 
-  <div class="md:grid md:grid-cols-2 p-6 w-full grid-flow-col gap-0">
-    <div class="justify-end flex">
-      <img v-motion
-           :initial="{ opacity: 0, x: -100, duration: 1000 }"
-           :enter="{ opacity: 1, x: 0 }"
-           :visible="{ opacity: 1, x: 0 }"
-           :delay="600" src="../../assets/work1.webp" class="object-cover" width="1733" height="1155" alt="">
+  <div class="md:grid md:grid-cols-3 p-6 w-full grid-flow-col gap-0">
+    <div class="justify-end flex col-span-2">
+        <video autoplay loop controls>
+            <source src="../../Assets/file_example.mp4" type="video/mp4">
+        </video>
     </div>
     <div class="flex items-center">
       <div class="py-8 px-4 w-full mx-auto max-w-screen-xl lg:py-16">
