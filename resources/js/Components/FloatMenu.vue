@@ -4,8 +4,6 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import Modal from "@/Components/Modal.vue";
 import DangerButton from "@/Components/DangerButton.vue";
 import {Link} from '@inertiajs/vue3';
-import male_pic from "@/Assets/male_pic.png";
-import female_pic from "@/Assets/female_pic.png";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 // data
