@@ -99,7 +99,9 @@ onMounted(() => {
                             <a href="dashboard" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group"
                                 :class="{ 'bg-blue-700': route().current('dashboardAdmin') }"
                             >
-                                <font-awesome-icon :icon="['fas', 'chart-pie']" class="w-5 h-5 transition duration-75 text-gray-400 group-hover:text-white"/>
+                                <font-awesome-icon :icon="['fas', 'chart-pie']" class="w-5 h-5 transition duration-75 group-hover:text-white"
+                                :class="route().current('dashboardAdmin') ? 'text-white' : 'text-gray-400'"
+                                />
                                 <span class="ml-3">Dashboard</span>
                             </a>
                         </li>
@@ -107,7 +109,9 @@ onMounted(() => {
                             <a href="book" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group"
                                :class="{ 'bg-blue-700': route().current('bookAdmin') }"
                             >
-                                <font-awesome-icon :icon="['fas', 'book']" class="w-5 h-5 transition duration-75 text-gray-400 group-hover:text-white"/>
+                                <font-awesome-icon :icon="['fas', 'book']" class="w-5 h-5 transition duration-75 text-gray-400 group-hover:text-white"
+                                :class="route().current('bookAdmin') ? 'text-white' : 'text-gray-400'"
+                                />
                                 <span class="flex-1 ml-3 whitespace-nowrap">Book</span>
                             </a>
                         </li>
@@ -115,13 +119,19 @@ onMounted(() => {
                             <a href="invoice" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group"
                                :class="{ 'bg-blue-700': route().current('invoiceAdmin') }"
                             >
-                                <font-awesome-icon :icon="['fas', 'receipt']" class="w-5 h-5 transition duration-75 text-gray-400 group-hover:text-white"/>
+                                <font-awesome-icon :icon="['fas', 'receipt']" class="w-5 h-5 transition duration-75 text-gray-400 group-hover:text-white"
+                                :class="route().current('invoiceAdmin') ? 'text-white' : 'text-gray-400'"
+                                />
                                 <span class="flex-1 ml-3 whitespace-nowrap">Invoice</span>
                             </a>
                         </li>
                         <li>
-                            <a href="user" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group">
-                                <font-awesome-icon :icon="['fas', 'user-group']" class="w-5 h-5 transition duration-75 text-gray-400 group-hover:text-white"/>
+                            <a href="user" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group"
+                               :class="{ 'bg-blue-700': route().current('userAdmin') }"
+                            >
+                                <font-awesome-icon :icon="['fas', 'user-group']" class="w-5 h-5 transition duration-75 text-gray-400 group-hover:text-white"
+                                :class="route().current('userAdmin') ? 'text-white' : 'text-gray-400'"
+                                />
                                 <span class="flex-1 ml-3 whitespace-nowrap">Users</span>
                             </a>
                         </li>

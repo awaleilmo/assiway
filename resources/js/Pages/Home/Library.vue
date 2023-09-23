@@ -285,7 +285,7 @@ onMounted(() => {
                     <card-with-image v-for="(item, index) in dataBooks.data" :key="index">
                         <template #image>
                             <img :src="item.coverType +','+ item.cover"
-                                 class="rounded-t-lg object-contain object-top h-96 w-full" alt="image"/>
+                                 class="rounded-t-lg object-contain object-top h-96 w-full mt-2" alt="image"/>
                         </template>
                         <template #header>
                             {{ item.name }}
