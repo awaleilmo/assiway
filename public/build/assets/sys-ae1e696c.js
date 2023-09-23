@@ -1,0 +1,1 @@
+function n(r){return r=r.target.files[0],new Promise((t,o)=>{const e=new FileReader;e.readAsDataURL(r),e.onload=()=>{t(e.result)},e.onerror=a=>{o(a)}})}const s=new Intl.NumberFormat("id-ID");export{n as c,s as f};

@@ -67,11 +67,11 @@ onMounted(() => {
                                         </p>
                                     </div>
                                     <ul class="py-1" role="none">
-                                        <li>
-                                            <a :href="route('profile.edit')"
-                                               class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white"
-                                               role="menuitem">Settings</a>
-                                        </li>
+<!--                                        <li>-->
+<!--                                            <a :href="route('profile.edit')"-->
+<!--                                               class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white"-->
+<!--                                               role="menuitem">Settings</a>-->
+<!--                                        </li>-->
                                         <li>
                                             <DropdownLink :href="route('logout')" method="post" as="button">Sign out</DropdownLink>
                                         </li>
